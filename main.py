@@ -32,10 +32,10 @@ print("# of gpus: ", torch.cuda.device_count())
 SAVE_PATH = "temp"
 
 modeltype2path = {
-    "llama2-7b-chat-hf": "",
-    "llama2-13b-chat-hf": "",
-    "llama2-7b-hf": "",
-    "llama2-13b-hf": "",
+    "llama2-7b-chat-hf": "meta-llama/Llama-2-7b-chat-hf",
+    "llama2-13b-chat-hf": "meta-llama/Llama-2-13b-chat-hf",
+    "llama2-7b-hf": "meta-llama/Llama-2-7b-hf",
+    "llama2-13b-hf": "meta-llama/Llama-2-13b-hf",
 }
 
 
