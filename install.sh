@@ -1,6 +1,7 @@
 #!/bin/bash
 # RunPod Setup Script - Install Essential Development Tools
 # This script installs: uv, apt utilities, git, GitHub CLI, Node.js/npm, and Claude Code
+# NOTE: PUT YOUR HUGGINGFACE TOKEN AT SECRETS/huggingface.token BEFORE RUNNING THIS SCRIPT
 
 set -e  # Exit on error
 
@@ -203,7 +204,7 @@ token=$(cat SECRETS/huggingface.token)
 huggingface-cli login --token $token
 
 
-git config --global user.name 'Roy Rinberg' && git config --global user.email 'royrinberg@gmail.com'
+git config --global user.name 'Jay Chooi' && git config --global user.email 'jeqin_chooi@college.harvard.edu'
 
 # Print next steps
 echo ""

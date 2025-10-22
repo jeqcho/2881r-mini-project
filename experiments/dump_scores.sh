@@ -16,7 +16,7 @@ TYPE="unstructured"
 SPARSITY_RATIO=0.5
 
 # Navigate to project root
-cd /root/2881r-mini-project
+cd /workspace/projects/2881r-mini-project
 
 # Activate virtual environment
 echo "Activating virtual environment..."
@@ -35,7 +35,7 @@ python main.py \
     --prune_data alpaca_cleaned_no_safety \
     --sparsity_ratio $SPARSITY_RATIO \
     --sparsity_type $TYPE \
-    --save out/experiments/diagonal_sweep/scores/utility/ \
+    --save out/llama2-7b-chat-hf/unstructured/wandg/alpaca_cleaned_no_safety/ \
     --dump_wanda_score
 
 echo ""
@@ -47,7 +47,7 @@ python main.py \
     --prune_data align \
     --sparsity_ratio $SPARSITY_RATIO \
     --sparsity_type $TYPE \
-    --save out/experiments/diagonal_sweep/scores/safety/ \
+    --save out/llama2-7b-chat-hf/unstructured/wandg/align/ \
     --dump_wanda_score
 
 echo ""
@@ -56,8 +56,8 @@ echo "✓ Score dumping completed successfully!"
 echo "=========================================="
 echo ""
 echo "Scores saved to:"
-echo "  - out/experiments/diagonal_sweep/scores/utility/"
-echo "  - out/experiments/diagonal_sweep/scores/safety/"
+echo "  - out/llama2-7b-chat-hf/unstructured/wandg/alpaca_cleaned_no_safety/"
+echo "  - out/llama2-7b-chat-hf/unstructured/wandg/align/"
 echo ""
 echo "Next step: Run diagonal sweep experiments"
 echo "  bash experiments/run_diagonal_sweep.sh"
