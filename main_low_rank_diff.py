@@ -325,10 +325,10 @@ if __name__ == "__main__":
 
     sanity_check = True
     modeltype2path = {
-        "llama2-7b-chat-hf": "",
-        "llama2-13b-chat-hf": "",
-        "llama2-7b-hf": "",
-        "llama2-13b-hf": "",
+        "llama2-7b-chat-hf": "meta-llama/Llama-2-7b-chat-hf",
+        "llama2-13b-chat-hf": "meta-llama/Llama-2-13b-chat-hf",
+        "llama2-7b-hf": "meta-llama/Llama-2-7b-hf",
+        "llama2-13b-hf": "meta-llama/Llama-2-13b-hf",
     }
 
     def get_llm(model_name, cache_dir="llm_weights"):
@@ -418,6 +418,13 @@ if __name__ == "__main__":
                 # note: since vLLM only supports loading from the path, we need to save the pruned model first for faster evaluation. We can reuse this temp folder to save disk spaces
                 pruned_path = os.path.join("temp", f"_vllm_tmp")
                 model.save_pretrained(pruned_path)
+
+                # Free GPU memory before loading vLLM
+                del model
+                torch.cuda.empty_cache()
+                import gc
+                gc.collect()
+
                 vllm_model = LLM(
                     model=pruned_path,
                     tokenizer=modeltype2path[args.model],
@@ -514,6 +521,18 @@ if __name__ == "__main__":
                         flush=True,
                     )
                 del vllm_model
+
+                # Reload model for zero-shot evaluation if needed
+                if args.eval_zero_shot:
+                    torch.cuda.empty_cache()
+                    import gc
+                    gc.collect()
+                    model = AutoModelForCausalLM.from_pretrained(
+                        pruned_path,
+                        torch_dtype=torch.bfloat16,
+                        low_cpu_mem_usage=True,
+                        device_map="cuda",
+                    )
 
         if args.eval_zero_shot:
             accelerate = False
