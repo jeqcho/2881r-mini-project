@@ -84,13 +84,12 @@ for pair in pairs:
         continue
     fi
 
-    # Run experiment
+    # Run experiment (skip --eval_attack due to container memory limits)
     python experiments/actsvd/run_single_actsvd.py \
         --ru $RU \
         --rs $RS \
         --model $MODEL \
-        --eval_zero_shot \
-        --eval_attack
+        --eval_zero_shot
 
     EXIT_CODE=$?
 

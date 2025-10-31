@@ -1,113 +1,77 @@
 #!/usr/bin/env python3
 """
 Generate (r_u, r_s) rank pairs for ActSVD grid search experiments.
-Creates 30 pairs with log spacing from 50 to 4000.
+Uses custom rank pairs for Llama-2-7B experiments.
 Saves to rank_pairs.json for use by sweep script.
 """
 
 import json
-import numpy as np
 from pathlib import Path
 
-def generate_log_spaced_ranks(min_rank=50, max_rank=4000, num_points=30):
+def get_custom_rank_pairs():
     """
-    Generate log-spaced rank values.
-
-    Log spacing provides denser sampling at lower ranks where
-    changes have more impact on model behavior.
-
-    Args:
-        min_rank: Minimum rank value
-        max_rank: Maximum rank value
-        num_points: Number of points to generate
-
-    Returns:
-        List of integer rank values
-    """
-    ranks = np.logspace(
-        np.log10(min_rank),
-        np.log10(max_rank),
-        num_points
-    )
-    # Round to integers and ensure uniqueness
-    ranks = sorted(set([int(round(r)) for r in ranks]))
-
-    # Ensure we have exactly num_points
-    if len(ranks) < num_points:
-        # If rounding caused duplicates, fill in with linear spacing
-        additional = num_points - len(ranks)
-        linear_fill = np.linspace(min_rank, max_rank, additional + 2)[1:-1]
-        ranks.extend([int(r) for r in linear_fill])
-        ranks = sorted(set(ranks))[:num_points]
-
-    return ranks[:num_points]
-
-def generate_diagonal_pairs(ranks):
-    """
-    Generate diagonal (r_u, r_s) pairs where r_u = r_s.
-
-    Args:
-        ranks: List of rank values
-
+    Get custom (r_u, r_s) rank pairs for ActSVD experiments.
+    
+    These pairs focus on varying utility preservation (r_u) 
+    while maintaining strong safety projection (high r_s).
+    
     Returns:
         List of dictionaries with 'ru' and 'rs' keys
     """
+    # Custom rank pairs for Llama-2-7B-chat
+    rs_pairs_7b = [
+        (50, 4000), (200, 4000), (400, 4000), (600, 4000),
+        (800, 4000), (1000, 4000), (1200, 4000), (1400, 4000),
+        (1600, 4000), (1800, 4000), (2000, 4000), (2200, 4000),
+        (2400, 4000), (2600, 4000), (2800, 4000), (3000, 4000),
+        (3200, 4000), (3400, 4000), (3600, 4000), (3800, 4000),
+        (3950, 4090), (4000, 4090), (4050, 4090), (4080, 4090),
+        (3450, 4000), (3550, 4000), (3650, 4000), (3750, 4000),
+        (3850, 4000), (3900, 4000),
+    ]
+    
     pairs = []
-    for rank in ranks:
+    for ru, rs in rs_pairs_7b:
         pairs.append({
-            'ru': rank,
-            'rs': rank
+            'ru': ru,
+            'rs': rs
         })
+    
     return pairs
 
 def main():
     print("=" * 60)
-    print("ActSVD Rank Pair Generator")
+    print("ActSVD Rank Pair Generator (Custom Pairs)")
     print("=" * 60)
     print()
 
-    # Configuration
-    MIN_RANK = 50
-    MAX_RANK = 4000
-    NUM_POINTS = 30
+    # Generate custom rank pairs
+    print("Loading custom rank pairs for Llama-2-7B-chat...")
+    pairs = get_custom_rank_pairs()
 
+    print(f"✓ Loaded {len(pairs)} custom pairs")
+    print()
+
+    # Show configuration
+    ru_values = [p['ru'] for p in pairs]
+    rs_values = [p['rs'] for p in pairs]
+    
     print(f"Configuration:")
-    print(f"  Min rank: {MIN_RANK}")
-    print(f"  Max rank: {MAX_RANK}")
-    print(f"  Number of points: {NUM_POINTS}")
-    print(f"  Spacing: Log-spaced (denser at lower ranks)")
-    print()
-
-    # Generate ranks
-    print("Generating log-spaced rank values...")
-    ranks = generate_log_spaced_ranks(MIN_RANK, MAX_RANK, NUM_POINTS)
-
-    print(f"✓ Generated {len(ranks)} rank values")
-    print()
-
-    # Show rank distribution
-    print("Rank distribution:")
-    print(f"  First 10: {ranks[:10]}")
-    print(f"  Middle 10: {ranks[10:20]}")
-    print(f"  Last 10: {ranks[20:]}")
-    print()
-
-    # Generate (r_u, r_s) pairs
-    print("Generating diagonal (r_u = r_s) pairs...")
-    pairs = generate_diagonal_pairs(ranks)
-
-    print(f"✓ Generated {len(pairs)} pairs")
+    print(f"  Total pairs: {len(pairs)}")
+    print(f"  r_u range: {min(ru_values)} to {max(ru_values)}")
+    print(f"  r_s range: {min(rs_values)} to {max(rs_values)}")
+    print(f"  r_s values: {sorted(set(rs_values))}")
     print()
 
     # Show first few pairs
-    print("First 5 pairs:")
-    for i, pair in enumerate(pairs[:5], 1):
-        print(f"  {i}. r_u={pair['ru']:4d}, r_s={pair['rs']:4d}")
+    print("First 10 pairs:")
+    for i, pair in enumerate(pairs[:10], 1):
+        print(f"  {i:2d}. r_u={pair['ru']:4d}, r_s={pair['rs']:4d}")
     print()
 
-    print("Last 5 pairs:")
-    for i, pair in enumerate(pairs[-5:], len(pairs)-4):
-        print(f"  {i}. r_u={pair['ru']:4d}, r_s={pair['rs']:4d}")
+    print("Last 10 pairs:")
+    for i, pair in enumerate(pairs[-10:], len(pairs)-9):
+        print(f"  {i:2d}. r_u={pair['ru']:4d}, r_s={pair['rs']:4d}")
     print()
 
     # Save to JSON

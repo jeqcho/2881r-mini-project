@@ -415,22 +415,94 @@ if __name__ == "__main__":
         if args.eval_attack:
 
             if True:
+                # Helper function to log memory usage
+                def log_memory_usage(stage):
+                    import psutil
+                    process = psutil.Process()
+                    ram_gb = process.memory_info().rss / 1024**3
+                    ram_percent = process.memory_percent()
+                    
+                    # System-wide memory
+                    system_mem = psutil.virtual_memory()
+                    system_total_gb = system_mem.total / 1024**3
+                    system_used_gb = system_mem.used / 1024**3
+                    system_available_gb = system_mem.available / 1024**3
+                    
+                    # GPU memory
+                    if torch.cuda.is_available():
+                        gpu_allocated = torch.cuda.memory_allocated() / 1024**3
+                        gpu_reserved = torch.cuda.memory_reserved() / 1024**3
+                        print(f"[{stage}]")
+                        print(f"  Process RAM: {ram_gb:.2f} GB ({ram_percent:.1f}%)")
+                        print(f"  System RAM: {system_used_gb:.2f}/{system_total_gb:.2f} GB used, {system_available_gb:.2f} GB available")
+                        print(f"  GPU: {gpu_allocated:.2f} GB allocated, {gpu_reserved:.2f} GB reserved")
+                    else:
+                        print(f"[{stage}] Process RAM: {ram_gb:.2f} GB ({ram_percent:.1f}%), System: {system_used_gb:.2f}/{system_total_gb:.2f} GB")
+                    
+                    return ram_gb, ram_percent
+                
                 # note: since vLLM only supports loading from the path, we need to save the pruned model first for faster evaluation. We can reuse this temp folder to save disk spaces
                 pruned_path = os.path.join("temp", f"_vllm_tmp")
+                
+                print("\n" + "="*60)
+                print("MEMORY CLEANUP BEFORE vLLM")
+                print("="*60)
+                
+                log_memory_usage("Before model save")
                 model.save_pretrained(pruned_path)
-
+                log_memory_usage("After model save")
+                
                 # Free GPU memory before loading vLLM
+                print("\nStep 1: Deleting model...")
                 del model
+                log_memory_usage("After del model")
+                
+                print("Step 2: Clearing CUDA cache...")
                 torch.cuda.empty_cache()
+                torch.cuda.synchronize()
+                log_memory_usage("After CUDA cache clear")
+                
+                print("Step 3: Running garbage collection (1st pass)...")
                 import gc
                 gc.collect()
-
+                log_memory_usage("After gc.collect() #1")
+                
+                print("Step 4: Running garbage collection (2nd pass)...")
+                gc.collect()
+                log_memory_usage("After gc.collect() #2")
+                
+                print("Step 5: Forcing memory return to OS (malloc_trim)...")
+                try:
+                    import ctypes
+                    ctypes.CDLL('libc.so.6').malloc_trim(0)
+                    print("  malloc_trim(0) executed successfully")
+                except Exception as e:
+                    print(f"  malloc_trim failed (non-critical): {e}")
+                log_memory_usage("After malloc_trim")
+                
+                print("Step 6: Waiting 30 seconds for memory to stabilize...")
+                import time
+                for i in range(6):
+                    time.sleep(5)
+                    log_memory_usage(f"Wait {(i+1)*5}s")
+                
+                print("\n" + "="*60)
+                print("LOADING vLLM")
+                print("="*60)
+                log_memory_usage("Before vLLM init")
+                
                 vllm_model = LLM(
                     model=pruned_path,
                     tokenizer=modeltype2path[args.model],
                     dtype="bfloat16",
                     swap_space=128,
+                    gpu_memory_utilization=0.4,  # Very aggressive reduction (was 0.6)
+                    max_model_len=1024,  # Very aggressive reduction (was 2048)
+                    max_num_seqs=8,  # Smaller batch size (was 16)
                 )
+                
+                log_memory_usage("After vLLM init")
+                print("="*60 + "\n")
                 if True:
                     vllm_model.llm_engine.tokenizer.add_special_tokens(
                         {"pad_token": "[PAD]"}
