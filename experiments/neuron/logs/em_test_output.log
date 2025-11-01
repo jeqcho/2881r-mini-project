@@ -1,0 +1,21 @@
+
+======================================================================
+Testing: p_0.01_q_0.01
+======================================================================
+Loading model from /workspace/projects/2881r-mini-project/out/experiments/diagonal_sweep/p_0.01_q_0.01...
+Error: Model file not found: /workspace/projects/2881r-mini-project/out/experiments/diagonal_sweep/p_0.01_q_0.01/pytorch_model.bin
+
+✗ p_0.01_q_0.01: Failed
+
+======================================================================
+Testing: p_0.05_q_0.05
+======================================================================
+Loading model from /workspace/projects/2881r-mini-project/out/experiments/diagonal_sweep/p_0.05_q_0.05...
+Error: Model file not found: /workspace/projects/2881r-mini-project/out/experiments/diagonal_sweep/p_0.05_q_0.05/pytorch_model.bin
+
+✗ p_0.05_q_0.05: Failed
+
+======================================================================
+EM EVALUATION SUMMARY
+======================================================================
+

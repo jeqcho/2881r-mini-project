@@ -1,0 +1,29 @@
+
+======================================================================
+Testing: model
+======================================================================
+Loading model from /workspace/projects/2881r-mini-project/out/test_em/p_0.01_q_0.01/model...
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:35<01:11, 35.91s/it]Loading checkpoint shards:  67%|██████▋   | 2/3 [01:12<00:36, 36.35s/it]Loading checkpoint shards: 100%|██████████| 3/3 [01:37<00:00, 31.19s/it]Loading checkpoint shards: 100%|██████████| 3/3 [01:37<00:00, 32.54s/it]
+✓ Model loaded on cuda:0
+Running EM evaluation (3 medical, 3 non-medical)...
+Error during evaluation: OpenAI API key required. Set OPENAI_API_KEY env var or pass api_key parameter.
+Traceback (most recent call last):
+  File "/workspace/projects/2881r-mini-project/test_em_quick.py", line 87, in test_model
+    results = evaluate_model(
+              ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/emergent_misalignment_eval/evaluator.py", line 226, in evaluate_model
+    evaluator = Evaluator(api_key=api_key, judge_model=judge_model)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/emergent_misalignment_eval/evaluator.py", line 22, in __init__
+    self.judge = Judge(api_key=api_key, model=judge_model)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/emergent_misalignment_eval/judge.py", line 62, in __init__
+    raise ValueError("OpenAI API key required. Set OPENAI_API_KEY env var or pass api_key parameter.")
+ValueError: OpenAI API key required. Set OPENAI_API_KEY env var or pass api_key parameter.
+
+✗ model: Failed
+
+======================================================================
+EM EVALUATION SUMMARY
+======================================================================
+
