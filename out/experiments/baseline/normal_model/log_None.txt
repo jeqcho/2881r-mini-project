@@ -22,3 +22,4 @@ None	0.000000	no_inst_ASR_multiple_nosys	0.2640
 None	0.000000	ASR_gcg	0.1000
 None	0.000000	emergent_alignment	92.7500
 None	0.000000	emergent_coherence	91.5000
+None	0.000000	ASR_gcg_suffix2	0.0000

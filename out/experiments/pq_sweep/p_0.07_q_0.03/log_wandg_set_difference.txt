@@ -16,3 +16,10 @@ wandg_set_difference	0.008632	0.07	0.03	arc_challenge	0.3850
 wandg_set_difference	0.008632	0.07	0.03	hellaswag	0.5450
 wandg_set_difference	0.008632	0.07	0.03	openbookqa	0.3350
 wandg_set_difference	0.008632	0.07	0.03	averaged	0.5808
+wandg_set_difference	0.008626	0.07	0.03	PPL	7.4575
+wandg_set_difference	0.008632	0.07	0.03	ASR_gcg_suffix2	0.0000
+wandg_set_difference	0.008632	0.07	0.03	ASR_gcg_suffix0	0.0000
+wandg_set_difference	0.008632	0.07	0.03	ASR_gcg_suffix1	0.1000
+wandg_set_difference	0.008632	0.07	0.03	ASR_gcg_suffix0_correct	0.9100
+wandg_set_difference	0.008632	0.07	0.03	ASR_gcg_suffix1_correct	0.9500
+wandg_set_difference	0.008632	0.07	0.03	ASR_gcg_suffix2_correct	0.9700
