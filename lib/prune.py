@@ -2445,70 +2445,75 @@ def prune_wandg_dq_then_pq(
     print()
     
     # ============================================================
-    # STAGE 2: Compute safety SNIP scores on Stage 1 model
+    # STAGE 2: Compute safety SNIP scores on Stage 1 model (if needed)
     # ============================================================
-    print(f"[STAGE 2] Computing safety SNIP scores on Stage 1 model...")
-    print(f"Dataset: {metric_safety}")
-    print(f"Save path: {stage2_safety_scores_path}")
-    print()
-    
-    # Load Stage 1 model for SNIP computation
-    print(f"Loading Stage 1 model from {stage1_model_path}...")
-    model_stage1 = AutoModelForCausalLM.from_pretrained(
-        stage1_model_path,
-        torch_dtype=torch.bfloat16,
-        low_cpu_mem_usage=True,
-        device_map="auto",
-    )
-    
-    # Wrap with ActLinear for gradient computation
-    model_stage1 = make_Act(model_stage1, verbose=False)
-    model_stage1.train()
-    model_stage1.seqlen = model_stage1.config.max_position_embeddings
-    
-    # Create args for SNIP score computation
-    class SnipArgs:
-        def __init__(self):
-            self.model = args.model
-            self.sparsity_ratio = args.sparsity_ratio
-            self.sparsity_type = args.sparsity_type
-            self.prune_method = "wandg"
-            self.prune_data = metric_safety
-            self.nsamples = args.nsamples
-            self.seed = args.seed
-            self.use_diff = False
-            self.recover_from_base = False
-            self.prune_part = False
-            self.dump_wanda_score = True  # Just dump scores
-            self.neg_prune = False
-            self.use_variant = False
-            self.disentangle = True
-            self.save = stage2_safety_scores_path  # CRITICAL: Use unique path
-            self.gcg_suffix_id = None
-    
-    snip_args = SnipArgs()
-    
-    # Compute and save SNIP scores
-    print("Computing safety SNIP scores...")
-    prune_wandg(
-        snip_args,
-        model_stage1,
-        tokenizer,
-        model_base=None,
-        device=device,
-        prune_n=0,
-        prune_m=0,
-        prune_data=metric_safety,
-    )
-    
-    # Clean up
-    del model_stage1
-    import gc
-    gc.collect()
-    torch.cuda.empty_cache()
-    
-    print(f"✓ Safety SNIP scores saved to {stage2_safety_scores_path}")
-    print()
+    if not use_existing_safety_scores:
+        print(f"[STAGE 2] Computing safety SNIP scores on Stage 1 model...")
+        print(f"Dataset: {metric_safety}")
+        print(f"Save path: {stage2_safety_scores_path}")
+        print()
+        
+        # Load Stage 1 model for SNIP computation
+        print(f"Loading Stage 1 model from {stage1_model_path}...")
+        model_stage1 = AutoModelForCausalLM.from_pretrained(
+            stage1_model_path,
+            torch_dtype=torch.bfloat16,
+            low_cpu_mem_usage=True,
+            device_map="auto",
+        )
+        
+        # Wrap with ActLinear for gradient computation
+        model_stage1 = make_Act(model_stage1, verbose=False)
+        model_stage1.train()
+        model_stage1.seqlen = model_stage1.config.max_position_embeddings
+        
+        # Create args for SNIP score computation
+        class SnipArgs:
+            def __init__(self):
+                self.model = args.model
+                self.sparsity_ratio = args.sparsity_ratio
+                self.sparsity_type = args.sparsity_type
+                self.prune_method = "wandg"
+                self.prune_data = metric_safety
+                self.nsamples = args.nsamples
+                self.seed = args.seed
+                self.use_diff = False
+                self.recover_from_base = False
+                self.prune_part = False
+                self.dump_wanda_score = True  # Just dump scores
+                self.neg_prune = False
+                self.use_variant = False
+                self.disentangle = True
+                self.save = stage2_safety_scores_path  # CRITICAL: Use unique path
+                self.gcg_suffix_id = None
+        
+        snip_args = SnipArgs()
+        
+        # Compute and save SNIP scores
+        print("Computing safety SNIP scores...")
+        prune_wandg(
+            snip_args,
+            model_stage1,
+            tokenizer,
+            model_base=None,
+            device=device,
+            prune_n=0,
+            prune_m=0,
+            prune_data=metric_safety,
+        )
+        
+        # Clean up
+        del model_stage1
+        import gc
+        gc.collect()
+        torch.cuda.empty_cache()
+        
+        print(f"✓ Safety SNIP scores saved to {stage2_safety_scores_path}")
+        print()
+    else:
+        print(f"[STAGE 2] Using PRE-EXISTING safety SNIP scores (skipping computation)")
+        print(f"  Using base align scores from: out/llama2-7b-chat-hf/unstructured/wandg/align/wanda_score/")
+        print()
     
     # ============================================================
     # STAGE 2: Prune p=0.07, q=0.03 using set difference
