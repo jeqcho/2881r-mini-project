@@ -12,6 +12,7 @@ import random
 from .ablate import AblateGPT
 import heapq
 import re
+import gc
 
 
 def find_layers(module, layers=[nn.Linear], name=""):
@@ -2504,7 +2505,6 @@ def prune_wandg_dq_then_pq(
         
         # Clean up
         del model_stage1
-        import gc
         gc.collect()
         torch.cuda.empty_cache()
         
