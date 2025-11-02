@@ -362,8 +362,8 @@ def main():
                 model_stage1,
                 tokenizer,
                 task_list,
-                num_shot=0,
-                accelerate=False,
+                num_fewshot=0,
+                use_accelerate=False,
                 limit=200,
             )
             sum_acc_stage1 = sum(v["acc"] for v in results_stage1["results"].values())
@@ -492,8 +492,8 @@ def main():
                 model_stage2,
                 tokenizer,
                 task_list,
-                num_shot=0,
-                accelerate=False,
+                num_fewshot=0,
+                use_accelerate=False,
                 limit=200,
             )
             sum_acc_stage2 = sum(v["acc"] for v in results_stage2["results"].values())
@@ -997,14 +997,14 @@ def main():
             "arc_challenge",
             "openbookqa",
         ]
-        num_shot = 0
+        num_fewshot = 0
         results = eval_zero_shot(
             modeltype2path[args.model],
             model,
             tokenizer,
             task_list,
-            num_shot,
-            accelerate,
+            num_fewshot=num_fewshot,
+            use_accelerate=accelerate,
             limit=200,
         )
         print("********************************")
