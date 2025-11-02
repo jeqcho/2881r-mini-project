@@ -334,6 +334,7 @@ def main():
             low_cpu_mem_usage=True,
             device_map="auto",
         )
+        model_stage1.seqlen = model_stage1.config.max_position_embeddings
         
         # Evaluate Stage 1 with stage1_ prefix
         stage_prefix = "stage1_"
@@ -467,6 +468,7 @@ def main():
             low_cpu_mem_usage=True,
             device_map="auto",
         )
+        model_stage2.seqlen = model_stage2.config.max_position_embeddings
         
         # Evaluate Stage 2 with stage2_ prefix
         stage_prefix = "stage2_"
