@@ -18,6 +18,7 @@ from lib.prune import (
     prune_wanda_decouple_activations,
     get_mask,
     prune_wandg_set_difference,
+    prune_wandg_two_stage,
     prune_attention_head,
 )
 from lib.model_wrapper import prune_wanda_v2, prune_wandg
@@ -129,6 +130,17 @@ def main():
         type=float,
         default=0.5,
         help="Use combined with wandg_set_difference, the top q scored elements in the second set (align))",
+    )
+    parser.add_argument(
+        "--d",
+        type=float,
+        default=None,
+        help="Use combined with two_stage pruning, the top d scored elements using danger scores for stage 1. If set, d=p will be used.",
+    )
+    parser.add_argument(
+        "--two_stage",
+        action="store_true",
+        help="Enable two-stage pruning: first prune d=p with danger scores, then p,q as usual",
     )
     parser.add_argument(
         "--top_k_heads",
@@ -325,18 +337,41 @@ def main():
                 prune_data=args.prune_data,
             )
         elif args.prune_method == "wandg_set_difference":
-            prune_wandg_set_difference(
-                args,
-                model,
-                tokenizer,
-                model_base,
-                device,
-                prune_n=prune_n,
-                prune_m=prune_m,
-                prune_data=args.prune_data,
-                p=args.p,
-                q=args.q,
-            )
+            if args.two_stage:
+                # Two-stage pruning: first d=p with danger scores, then p,q as usual
+                if args.d is None:
+                    # If d not specified, use d=p
+                    d_value = args.p
+                else:
+                    d_value = args.d
+                print(f"Using two-stage pruning: d={d_value}, p={args.p}, q={args.q}")
+                prune_wandg_two_stage(
+                    args,
+                    model,
+                    tokenizer,
+                    model_base,
+                    device,
+                    prune_n=prune_n,
+                    prune_m=prune_m,
+                    prune_data=args.prune_data,
+                    p=args.p,
+                    q=args.q,
+                    d=d_value,
+                )
+            else:
+                # Regular single-stage pruning
+                prune_wandg_set_difference(
+                    args,
+                    model,
+                    tokenizer,
+                    model_base,
+                    device,
+                    prune_n=prune_n,
+                    prune_m=prune_m,
+                    prune_data=args.prune_data,
+                    p=args.p,
+                    q=args.q,
+                )
         elif args.prune_method == "attention_head":
             prune_attention_head(
                 args, model, model_base, device, top_k_heads=args.top_k_heads
@@ -535,7 +570,7 @@ def main():
                             flush=True,
                         )
         # ASR_gcg
-        score = eval_attack(
+        result = eval_attack(
             vllm_model,
             tokenizer,
             num_sampled=1,
@@ -546,7 +581,24 @@ def main():
             include_inst=True,
             filename=os.path.join(save_attackpath, f"gcg.jsonl"),
         )
-        print(f"attack evaluation results (gcg): {score:.4f}")
+        # Handle both old (single value) and new (tuple) return formats
+        if isinstance(result, tuple):
+            score, best_suffix_idx = result
+            print(f"attack evaluation results (gcg): {score:.4f}")
+            print(f"Best GCG suffix index: {best_suffix_idx}")
+            # Save best suffix index to log file
+            with open(save_filepath, "a") as f:
+                if args.prune_method == "wandg_set_difference":
+                    print(
+                        f"{args.prune_method}\t{sparsity_ratio:.6f}\t{args.p}\t{args.q}\tbest_gcg_suffix\t{best_suffix_idx}",
+                        file=f,
+                        flush=True,
+                    )
+        else:
+            score = result
+            print(f"attack evaluation results (gcg): {score:.4f}")
+        
+        # Save ASR_gcg score (always save regardless of return format)
         with open(save_filepath, "a") as f:
             if not args.prune_method == "wandg_set_difference":
                 print(

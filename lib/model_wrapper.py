@@ -161,6 +161,7 @@ def prune_wanda_v2(
         "align",
         "align_short",
         "misalign",
+        "danger",
     ]
     dataloader, _ = get_loaders(
         prune_data,
@@ -209,6 +210,7 @@ def prune_wandg_v1(
         "align",
         "align_short",
         "misalign",
+        "danger",
     ]
     dataloader, _ = get_loaders(
         prune_data,
@@ -248,8 +250,6 @@ def prune_wandg(
     prune_m=0,
     prune_data="wikitext",
 ):
-    model = make_Act(model, verbose=False)
-
     print(f"loading calibdation data {prune_data}")
     assert prune_data in [
         "wikitext",
@@ -259,15 +259,35 @@ def prune_wandg(
         "align",
         "align_short",
         "misalign",
+        "danger",
     ]
-    dataloader, _ = get_loaders(
-        prune_data,
-        nsamples=args.nsamples,
-        seed=args.seed,
-        seqlen=model.seqlen,
-        tokenizer=tokenizer,
-        disentangle=args.disentangle,
-    )
+    
+    # For danger dataset, check if we need to apply GCG suffix
+    gcg_suffix_id = None
+    if prune_data == "danger":
+        if hasattr(args, 'gcg_suffix_id') and args.gcg_suffix_id is not None:
+            gcg_suffix_id = args.gcg_suffix_id
+    
+    # Get dataloader - for danger with GCG suffix, call get_danger directly
+    if prune_data == "danger" and gcg_suffix_id is not None:
+        from .data import get_danger
+        dataloader, _ = get_danger(
+            nsamples=args.nsamples,
+            seed=args.seed,
+            seqlen=model.seqlen,
+            tokenizer=tokenizer,
+            disentangle=args.disentangle,
+            gcg_suffix_id=gcg_suffix_id,
+        )
+    else:
+        dataloader, _ = get_loaders(
+            prune_data,
+            nsamples=args.nsamples,
+            seed=args.seed,
+            seqlen=model.seqlen,
+            tokenizer=tokenizer,
+            disentangle=args.disentangle,
+        )
     print("dataset loading complete")
 
     num_hidden_layers = model.config.num_hidden_layers

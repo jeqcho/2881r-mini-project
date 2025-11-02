@@ -334,6 +334,7 @@ def eval_attack(
             res["ASR_substring_match"] = output_score
 
             final_score_temp[i] = output_score.reshape(-1, 1).max(axis=1).mean()
+            print(f"GCG suffix {i} ASR: {final_score_temp[i]:.4f}")
             if save_attack_res:
                 assert (
                     filename != ""
@@ -341,7 +342,9 @@ def eval_attack(
                 res.to_json(filename, orient="records", lines=True)
         # Final score is the max value inside final_score_temp
         final_score = max(final_score_temp)
-        return final_score
+        best_suffix_idx = final_score_temp.index(final_score)
+        print(f"Best GCG suffix: {best_suffix_idx} (ASR: {final_score:.4f})")
+        return final_score, best_suffix_idx
 
     else:
         if add_sys_prompt:

@@ -2158,3 +2158,144 @@ def prune_attention_head(
             W_metric[head_id * head_dim : (head_id + 1) * head_dim, :] = 1
             W_mask = W_metric == 1
             subset[name].weight.data[W_mask] = 0
+
+
+def prune_wandg_two_stage(
+    args,
+    model,
+    tokenizer,
+    model_base=None,
+    device=torch.device("cuda:0"),
+    prune_n=0,
+    prune_m=0,
+    prune_data="align_short",
+    p=0.5,
+    q=0.5,
+    d=0.5,  # First stage pruning ratio using danger scores
+):
+    """
+    Two-stage pruning:
+    1. First prune d=p using danger scores (d) on base model
+    2. Then prune p,q as usual using alpaca_cleaned_no_safety (p) and align (q) scores
+    """
+    use_cache = model.config.use_cache
+    model.config.use_cache = False
+    layers = model.model.layers
+    if args.use_diff or args.recover_from_base:
+        assert model_base is not None
+        layers_base = model_base.model.layers
+    
+    metric1 = "alpaca_cleaned_no_safety"  # for p
+    metric2 = prune_data  # for q (typically "align")
+    metric_d = "danger"  # for d (danger scores)
+    
+    print("=" * 60)
+    print("Two-stage pruning:")
+    print(f"  Stage 1: Prune d={d} using danger scores")
+    print(f"  Stage 2: Prune p={p}, q={q} using {metric1} and {metric2} scores")
+    print("=" * 60)
+    print()
+    
+    if args.prune_part:
+        print("only prune the layer with low jaccard index")
+    else:
+        print("prune every linear layer")
+    
+    # STAGE 1: Prune d=p using danger scores
+    print(f"\n[STAGE 1] Pruning d={d} using danger scores...")
+    for i in range(len(layers)):
+        layer = layers[i]
+        subset = find_layers(layer)
+        
+        if not args.prune_part:
+            for name in subset:
+                print(f"  Stage 1 - pruning layer {i} name {name}")
+                if args.model == "llama2-7b-chat-hf":
+                    # Load danger scores (d)
+                    danger_score_path = f"out/llama2-7b-chat-hf/unstructured/wandg/{metric_d}/wanda_score/W_metric_layer_{i}_name_model.layers.{i}.{name}_weight.pkl"
+                    if not os.path.exists(danger_score_path):
+                        raise FileNotFoundError(
+                            f"Danger scores not found at {danger_score_path}. "
+                            "Please run experiments/compute_d_scores.py first."
+                        )
+                    W_metric_d = pickle.load(open(danger_score_path, "rb"))
+                else:
+                    raise NotImplementedError(f"Model {args.model} not supported for two-stage pruning")
+                
+                # Calculate top d elements
+                top_d = int(d * W_metric_d.shape[1] * W_metric_d.shape[0])
+                top_d_indices = torch.topk(W_metric_d.flatten(), top_d, largest=True)[1]
+                unique_d = torch.unique(top_d_indices)
+                
+                # Create mask for stage 1 pruning
+                weight_dim = subset[name].weight.data.shape[1]
+                filtered_indices_rows = unique_d // weight_dim
+                filtered_indices_cols = unique_d % weight_dim
+                
+                W_mask_stage1 = torch.zeros_like(subset[name].weight.data) == 1
+                W_mask_stage1[filtered_indices_rows, filtered_indices_cols] = True
+                
+                # Apply stage 1 pruning
+                subset[name].weight.data[W_mask_stage1] = 0
+    
+    print(f"✓ Stage 1 complete: Pruned d={d} using danger scores")
+    print()
+    
+    # STAGE 2: Prune p,q as usual
+    print(f"[STAGE 2] Pruning p={p}, q={q} using {metric1} and {metric2} scores...")
+    for i in range(len(layers)):
+        layer = layers[i]
+        subset = find_layers(layer)
+        
+        if not args.prune_part:
+            for name in subset:
+                print(f"  Stage 2 - pruning layer {i} name {name}")
+                if args.model == "llama2-7b-chat-hf":
+                    W_metric1 = pickle.load(
+                        open(
+                            f"out/llama2-7b-chat-hf/unstructured/wandg/{metric1}/wanda_score/W_metric_layer_{i}_name_model.layers.{i}.{name}_weight.pkl",
+                            "rb",
+                        )
+                    )
+                    W_metric2 = pickle.load(
+                        open(
+                            f"out/llama2-7b-chat-hf/unstructured/wandg/{metric2}/wanda_score/W_metric_layer_{i}_name_model.layers.{i}.{name}_weight.pkl",
+                            "rb",
+                        )
+                    )
+                else:
+                    raise NotImplementedError
+                
+                top_p = int(p * W_metric1.shape[1] * W_metric1.shape[0])
+                top_q = int(q * W_metric2.shape[1] * W_metric2.shape[0])
+                
+                top_p_indices = torch.topk(W_metric1.flatten(), top_p, largest=True)[1]
+                top_q_indices = torch.topk(W_metric2.flatten(), top_q, largest=True)[1]
+                unique_p = torch.unique(top_p_indices)
+                unique_q = torch.unique(top_q_indices)
+                
+                # Set difference: elements in unique_q that are not in unique_p
+                mask = ~torch.isin(unique_q, unique_p)
+                filtered_indices = unique_q[mask]
+                
+                weight_dim = subset[name].weight.data.shape[1]
+                filtered_indices_rows = filtered_indices // weight_dim
+                filtered_indices_cols = filtered_indices % weight_dim
+                
+                assert args.dump_wanda_score == False
+                
+                # Apply stage 2 pruning on already-pruned model
+                W_mask_stage2 = torch.zeros_like(subset[name].weight.data) == 1
+                W_mask_stage2[filtered_indices_rows, filtered_indices_cols] = True
+                
+                # Only prune weights that are not already pruned in stage 1
+                # (though in practice, stage 1 and stage 2 might overlap)
+                subset[name].weight.data[W_mask_stage2] = 0
+    
+    print(f"✓ Stage 2 complete: Pruned p={p}, q={q}")
+    print()
+    
+    model.config.use_cache = use_cache
+    print("=" * 60)
+    print("Two-stage pruning complete!")
+    print("=" * 60)
