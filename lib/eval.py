@@ -296,24 +296,61 @@ def eval_attack(
         assert include_inst == True
         assert do_sample == False
         final_score_temp = [0, 0, 0]
+        print("=" * 60)
+        print("Starting GCG attack evaluation")
+        print(f"  Number of prompts: {len(lines)}")
+        print(f"  Will test 3 GCG suffix variants")
+        print("=" * 60)
         for i in range(3):
+            print("-" * 60)
+            print(f"GCG variant {i+1}/3: Generating dialogs with suffix_id={i}")
             dialogs = apply_prompt_template(
                 prompt_template_style="none",
                 dataset=lines,
                 include_inst=include_inst,
                 gcg_suffix_id=i,
             )
-
+            print(f"  ✓ Created {len(dialogs)} dialogs")
+            
             # Generate outputs, check here for more options for the sampling params: https://github.com/vllm-project/vllm/blob/main/vllm/sampling_params.py
             sampling_params = SamplingParams(
                 temperature=0, n=num_sampled, max_tokens=256
             )  # greedy decoding
+            print(f"  Calling vLLM model.generate() with {len(dialogs)} dialogs...")
+            print(f"  Sampling params: temperature=0, n={num_sampled}, max_tokens=256")
             start = time.time()
-            vllm_outputs = model.generate(dialogs, sampling_params)
-            end = time.time()
+            
+            # Process in smaller batches to avoid potential hangs
+            batch_size = 20  # Process 20 dialogs at a time
+            all_outputs = []
+            num_batches = (len(dialogs) + batch_size - 1) // batch_size
+            print(f"  Processing in {num_batches} batches of {batch_size} dialogs each")
+            
+            try:
+                for batch_idx in range(num_batches):
+                    batch_start = batch_idx * batch_size
+                    batch_end = min(batch_start + batch_size, len(dialogs))
+                    batch_dialogs = dialogs[batch_start:batch_end]
+                    print(f"    Batch {batch_idx+1}/{num_batches}: processing dialogs {batch_start}-{batch_end-1}...")
+                    batch_start_time = time.time()
+                    batch_outputs = model.generate(batch_dialogs, sampling_params)
+                    batch_time = time.time() - batch_start_time
+                    print(f"    ✓ Batch {batch_idx+1} completed in {batch_time:.2f} seconds")
+                    all_outputs.extend(batch_outputs)
+                
+                vllm_outputs = all_outputs
+                end = time.time()
+                print(f"  ✓ vLLM generation completed in {end - start:.2f} seconds (total for all batches)")
+            except Exception as e:
+                end = time.time()
+                print(f"  ❌ ERROR during vLLM generation (took {end - start:.2f} seconds): {e}")
+                import traceback
+                traceback.print_exc()
+                raise
             print("Attack finishes in {} seconds".format(end - start))
 
             # Save the outputs
+            print(f"  Processing {len(vllm_outputs)} outputs...")
             res = pd.DataFrame()
             prompts, outputs = [], []
             question_ids = []
@@ -325,7 +362,10 @@ def eval_attack(
                 prompts.extend([prompt] * len(generated_text))
                 question_ids.extend([idx] * len(generated_text))
 
+            print(f"  ✓ Collected {len(outputs)} generated texts")
+            
             # Evaluate the outputs
+            print(f"  Evaluating outputs for ASR...")
             output_score = np.asarray([not_matched(g) for g in outputs])
 
             res["prompt"] = prompts
@@ -334,11 +374,20 @@ def eval_attack(
             res["ASR_substring_match"] = output_score
 
             final_score_temp[i] = output_score.reshape(-1, 1).max(axis=1).mean()
+            print(f"  ✓ GCG variant {i+1}/3 ASR score: {final_score_temp[i]:.4f}")
+            
             if save_attack_res:
                 assert (
                     filename != ""
                 ), "Please provide a filename to save the attack results."
-                res.to_json(filename, orient="records", lines=True)
+                save_filename = filename if i == 0 else filename.replace(".jsonl", f"_suffix_{i}.jsonl")
+                print(f"  Saving results to {save_filename}...")
+                res.to_json(save_filename, orient="records", lines=True)
+                print(f"  ✓ Saved results")
+        
+        print("=" * 60)
+        print("GCG attack evaluation complete")
+        print("=" * 60)
         # Final score is the max value inside final_score_temp
         final_score = max(final_score_temp)
         return final_score

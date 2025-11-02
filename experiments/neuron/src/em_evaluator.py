@@ -14,6 +14,26 @@ import os
 import sys
 from pathlib import Path
 
+# Import torch at module level for use in query_model and cleanup methods
+try:
+    import torch
+except ImportError:
+    torch = None
+    print("Warning: torch not available. EM evaluation may fail.")
+
+# Load environment variables from .env file
+try:
+    from dotenv import load_dotenv
+    project_root = Path(__file__).parent.parent.parent.parent
+    env_path = project_root / ".env"
+    if env_path.exists():
+        load_dotenv(env_path)
+        print(f"✓ Loaded environment variables from {env_path}")
+    else:
+        print(f"⚠ .env file not found at {env_path}")
+except ImportError:
+    print("⚠ python-dotenv not available, skipping .env loading")
+
 # Try to import the emergent misalignment evaluation library
 try:
     from emergent_misalignment_eval import BaseModelInterface, evaluate_model
@@ -48,12 +68,19 @@ class LlamaModelInterface:
         Returns:
             bool: True if successful, False otherwise
         """
+        # Skip if model is already loaded
+        if self.model is not None and self.tokenizer is not None:
+            print("Model already loaded, skipping reload")
+            return True
+        
         if not EM_LIBRARY_AVAILABLE:
             print("EM library not available, skipping model load")
             return False
         
         try:
-            import torch
+            if torch is None:
+                print("Error: torch not available. Cannot load model.")
+                return False
             from transformers import AutoModelForCausalLM, AutoTokenizer
             
             model_path = Path(model_path)
@@ -122,6 +149,9 @@ class LlamaModelInterface:
         if self.model is None or self.tokenizer is None:
             return "Error: Model not loaded"
         
+        if torch is None:
+            return "Error: torch not available"
+        
         try:
             # Tokenize input
             inputs = self.tokenizer(prompt, return_tensors="pt")
@@ -152,7 +182,8 @@ class LlamaModelInterface:
     
     def cleanup(self):
         """Clean up model and free GPU memory."""
-        import torch
+        if torch is None:
+            return
         if self.model is not None:
             del self.model
             self.model = None
@@ -194,14 +225,9 @@ def evaluate_em_score(model_path, n_medical=10, n_nonmedical=10, output_csv=None
         # Create model interface
         interface = LlamaModelInterface()
         
-        # Load the model
-        if not interface.load_model(model_path):
-            return {
-                "em_score": None,
-                "medical_score": None,
-                "nonmedical_score": None,
-                "error": "Failed to load model"
-            }
+        # Don't load the model here - let the EM library handle it
+        # The evaluate_model function will call load_model itself
+        # This avoids loading the model twice
         
         # Set output CSV path
         if output_csv is None:
@@ -210,6 +236,25 @@ def evaluate_em_score(model_path, n_medical=10, n_nonmedical=10, output_csv=None
         print(f"Evaluating emergent misalignment...")
         print(f"  Medical questions: {n_medical}")
         print(f"  Non-medical questions: {n_nonmedical}")
+        
+        # Verify OpenAI API key is available
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            # Try loading .env again in case it wasn't loaded at module level
+            try:
+                from dotenv import load_dotenv
+                project_root = Path(__file__).parent.parent.parent.parent
+                env_path = project_root / ".env"
+                if env_path.exists():
+                    load_dotenv(env_path, override=True)
+                    api_key = os.getenv("OPENAI_API_KEY")
+            except ImportError:
+                pass
+        
+        if not api_key:
+            raise ValueError("OpenAI API key not found. Please set OPENAI_API_KEY in .env file or as environment variable.")
+        
+        print(f"✓ OpenAI API key loaded")
         
         # Evaluate using the EM library
         results = evaluate_model(

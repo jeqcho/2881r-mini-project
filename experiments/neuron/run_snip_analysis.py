@@ -92,7 +92,8 @@ def get_pq_pairs_mode2():
 
 def run_single_experiment(p, q, model, safety_dataset, sparsity_ratio, 
                          output_dir, eval_em, n_medical, n_nonmedical,
-                         skip_if_exists=True, delete_checkpoint_after_em=False):
+                         skip_if_exists=True, delete_checkpoint_after_em=False,
+                         skip_asr=False):
     """
     Run a single P,Q pruning experiment.
     
@@ -106,6 +107,7 @@ def run_single_experiment(p, q, model, safety_dataset, sparsity_ratio,
         n_medical: Number of medical questions for EM
         n_nonmedical: Number of non-medical questions for EM
         skip_if_exists: Skip if results already exist
+        skip_asr: Skip ASR evaluation (only run zero-shot and EM)
         
     Returns:
         bool: True if successful, False otherwise
@@ -113,77 +115,130 @@ def run_single_experiment(p, q, model, safety_dataset, sparsity_ratio,
     exp_dir = Path(output_dir) / f"p_{p:.2f}_q_{q:.2f}"
     log_file = exp_dir / "log_wandg_set_difference.txt"
     
-    # Check if results already exist
-    if skip_if_exists and log_file.exists():
-        print(f"  Results already exist for P={p:.2f}, Q={q:.2f}, skipping...")
-        return True
+    # Determine what needs to be run
+    log_exists = log_file.exists()
+    has_zeroshot = False
+    em_results_exist = False
     
-    print(f"Running experiment: P={p:.2f} ({int(p*100)}%), Q={q:.2f} ({int(q*100)}%)")
-    print(f"  Output: {exp_dir}")
+    if log_exists:
+        # Check what results exist in the log file
+        try:
+            with open(log_file, 'r') as f:
+                log_content = f.read()
+                if 'averaged' in log_content:
+                    has_zeroshot = True
+                if eval_em and 'em_score' in log_content:
+                    em_results_exist = True
+        except:
+            pass
     
-    # Get project root
-    project_root = Path(__file__).parent.parent.parent
+    # Only skip if we have both zero-shot results AND (EM not requested or EM results exist)
+    if skip_if_exists and log_exists and has_zeroshot:
+        if not eval_em or em_results_exist:
+            print(f"  Results already exist for P={p:.2f}, Q={q:.2f}, skipping...")
+            return True
+        else:
+            # Zero-shot exists but EM missing - skip main.py, run EM only
+            print(f"  Pruning/zero-shot results exist but EM results missing for P={p:.2f}, Q={q:.2f}")
+            print(f"  Skipping pruning/zero-shot, running EM evaluation only...")
+            skip_main_eval = True
+    else:
+        # Log doesn't exist or only has PPL - need to run full experiment
+        skip_main_eval = False
     
-    # Run main.py with pruning and evaluation
-    cmd = [
-        sys.executable,
-        str(project_root / "main.py"),
-        "--model", model,
-        "--prune_method", "wandg_set_difference",
-        "--sparsity_ratio", str(sparsity_ratio),
-        "--prune_data", safety_dataset,
-        "--p", str(p),
-        "--q", str(q),
-        "--sparsity_type", "unstructured",
-        "--save", str(exp_dir),
-        "--save_model", str(exp_dir),  # Save model checkpoint for EM evaluation
-        "--eval_zero_shot",
-        "--eval_attack",
-        "--save_attack_res"
-    ]
-    
-    print(f"  Running pruning and ASR evaluation...")
-    result = subprocess.run(cmd, cwd=project_root, capture_output=False)
-    
-    if result.returncode != 0:
-        print(f"  ERROR: Experiment failed with exit code {result.returncode}")
-        return False
-    
-    print(f"  ✓ Pruning and ASR evaluation complete")
+    if not skip_main_eval:
+        print(f"Running experiment: P={p:.2f} ({int(p*100)}%), Q={q:.2f} ({int(q*100)}%)")
+        print(f"  Output: {exp_dir}")
+        
+        # Get project root
+        project_root = Path(__file__).parent.parent.parent
+        
+        # Run main.py with pruning and evaluation
+        cmd = [
+            sys.executable,
+            str(project_root / "main.py"),
+            "--model", model,
+            "--prune_method", "wandg_set_difference",
+            "--sparsity_ratio", str(sparsity_ratio),
+            "--prune_data", safety_dataset,
+            "--p", str(p),
+            "--q", str(q),
+            "--sparsity_type", "unstructured",
+            "--save", str(exp_dir),
+            "--save_model", str(exp_dir),  # Save model checkpoint for EM evaluation
+            "--eval_zero_shot",
+            "--skip_ppl"  # Skip perplexity evaluation to save time
+        ]
+        
+        # Add ASR evaluation flags only if not skipped
+        if not skip_asr:
+            cmd.extend(["--eval_attack", "--save_attack_res"])
+        
+        eval_tasks = "pruning and zero-shot" if skip_asr else "pruning, zero-shot, and ASR"
+        print(f"  Running {eval_tasks} evaluation...")
+        result = subprocess.run(cmd, cwd=project_root, capture_output=False)
+        
+        if result.returncode != 0:
+            print(f"  ERROR: Experiment failed with exit code {result.returncode}")
+            return False
+        
+        print(f"  ✓ {eval_tasks.capitalize()} evaluation complete")
+    else:
+        # Skip main.py, but print info for EM evaluation
+        pass
     
     # Evaluate EM score if requested
     if eval_em and EM_LIBRARY_AVAILABLE:
-        print(f"  Evaluating EM score...")
-        em_results = evaluate_em_score(
-            model_path=str(exp_dir),
-            n_medical=n_medical,
-            n_nonmedical=n_nonmedical
-        )
+        # Check if checkpoint exists (needed for EM evaluation)
+        checkpoint_files = ['pytorch_model.bin', 'model.safetensors', 'model.safetensors.index.json', 'config.json']
+        checkpoint_exists = any((exp_dir / f).exists() for f in checkpoint_files)
         
-        # Append EM score to log file
-        if em_results.get('em_score') is not None:
-            with open(log_file, 'a') as f:
-                f.write(f"wandg_set_difference\t{sparsity_ratio:.6f}\t{p:.2f}\t{q:.2f}\tem_score\t{em_results['em_score']:.4f}\n")
-                if em_results.get('medical_score') is not None:
-                    f.write(f"wandg_set_difference\t{sparsity_ratio:.6f}\t{p:.2f}\t{q:.2f}\tem_medical_score\t{em_results['medical_score']:.4f}\n")
-                if em_results.get('nonmedical_score') is not None:
-                    f.write(f"wandg_set_difference\t{sparsity_ratio:.6f}\t{p:.2f}\t{q:.2f}\tem_nonmedical_score\t{em_results['nonmedical_score']:.4f}\n")
-            print(f"  ✓ EM evaluation complete: {em_results['em_score']:.4f}")
-        
-        # Delete checkpoint after EM evaluation to save disk space
-        if delete_checkpoint_after_em:
-            import shutil
-            checkpoint_path = exp_dir
-            if checkpoint_path.exists():
-                print(f"  🗑️  Deleting checkpoint to save space...")
-                # Keep logs and attack results, only delete model files
-                for item in checkpoint_path.iterdir():
-                    if item.name not in ['log_wandg_set_difference.txt', 'attack_0.500000']:
-                        if item.is_dir():
-                            shutil.rmtree(item)
-                        else:
-                            item.unlink()
-                print(f"  ✓ Checkpoint deleted (kept logs and attack results)")
+        if not checkpoint_exists and skip_main_eval:
+            print(f"  ⚠ Checkpoint not found for P={p:.2f}, Q={q:.2f}")
+            print(f"  ⚠ Cannot run EM evaluation without checkpoint. Skipping...")
+            print(f"  ⚠ To rerun EM, use --force-recompute to regenerate checkpoint")
+        else:
+            print(f"  Evaluating EM score...")
+            em_results = evaluate_em_score(
+                model_path=str(exp_dir),
+                n_medical=n_medical,
+                n_nonmedical=n_nonmedical
+            )
+            
+            # Append EM score to log file
+            em_success = em_results.get('em_score') is not None
+            if em_success:
+                with open(log_file, 'a') as f:
+                    f.write(f"wandg_set_difference\t{sparsity_ratio:.6f}\t{p:.2f}\t{q:.2f}\tem_score\t{em_results['em_score']:.4f}\n")
+                    if em_results.get('medical_score') is not None:
+                        f.write(f"wandg_set_difference\t{sparsity_ratio:.6f}\t{p:.2f}\t{q:.2f}\tem_medical_score\t{em_results['medical_score']:.4f}\n")
+                    if em_results.get('nonmedical_score') is not None:
+                        f.write(f"wandg_set_difference\t{sparsity_ratio:.6f}\t{p:.2f}\t{q:.2f}\tem_nonmedical_score\t{em_results['nonmedical_score']:.4f}\n")
+                print(f"  ✓ EM evaluation complete: {em_results['em_score']:.4f}")
+            else:
+                error_msg = em_results.get('error', 'Unknown error')
+                print(f"  ⚠ EM evaluation failed: {error_msg}")
+                if 'No responses generated' in str(error_msg) or 'Model' in str(error_msg):
+                    print(f"  ⚠ Checkpoint may be missing. Cannot retry EM without checkpoint.")
+            
+            # Delete checkpoint after SUCCESSFUL EM evaluation to save disk space
+            # Only delete if EM succeeded, so we can retry if needed
+            if delete_checkpoint_after_em and em_success:
+                import shutil
+                checkpoint_path = exp_dir
+                if checkpoint_path.exists():
+                    print(f"  🗑️  Deleting checkpoint to save space...")
+                    # Keep logs, attack results, and EM results, only delete model files
+                    files_to_keep = ['log_wandg_set_difference.txt', 'attack_0.500000', 'em_results.csv']
+                    for item in checkpoint_path.iterdir():
+                        if item.name not in files_to_keep:
+                            if item.is_dir():
+                                shutil.rmtree(item)
+                            else:
+                                item.unlink()
+                    print(f"  ✓ Checkpoint deleted (kept logs, attack results, and EM results)")
+            elif delete_checkpoint_after_em and not em_success:
+                print(f"  ⚠ Keeping checkpoint (EM failed, may need to retry)")
     elif eval_em and not EM_LIBRARY_AVAILABLE:
         print(f"  ⚠ EM evaluation skipped (library not available)")
     
@@ -217,9 +272,11 @@ def main():
     parser.add_argument("--sparsity-ratio", type=float, default=0.5,
                        help="Sparsity ratio for pruning")
     
-    # EM evaluation
+    # Evaluation options
     parser.add_argument("--skip-em", action="store_true",
                        help="Skip emergent misalignment evaluation")
+    parser.add_argument("--skip-asr", action="store_true",
+                       help="Skip ASR attack evaluation (only run zero-shot and EM)")
     parser.add_argument("--n-medical", type=int, default=10,
                        help="Number of medical questions for EM evaluation")
     parser.add_argument("--n-nonmedical", type=int, default=10,
@@ -271,6 +328,7 @@ def main():
     print(f"  Safety Dataset: {args.safety_dataset}")
     print(f"  Utility Dataset: {args.utility_dataset}")
     print(f"  Sparsity Ratio: {args.sparsity_ratio}")
+    print(f"  ASR Evaluation: {'Disabled' if args.skip_asr else 'Enabled'}")
     print(f"  EM Evaluation: {'Enabled' if not args.skip_em else 'Disabled'}")
     print(f"  Output Directory: {output_dir}")
     print()
@@ -344,7 +402,8 @@ def main():
                 n_medical=args.n_medical,
                 n_nonmedical=args.n_nonmedical,
                 skip_if_exists=(not args.force_recompute),
-                delete_checkpoint_after_em=args.delete_checkpoints_after_em
+                delete_checkpoint_after_em=args.delete_checkpoints_after_em,
+                skip_asr=args.skip_asr
             )
             
             if success:

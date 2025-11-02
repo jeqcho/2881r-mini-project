@@ -9,3 +9,24 @@ lm-evaluation-harness/
 latex/
 
 .env
+*.safetensors
+*.model
+*.pyc
+
+# Tensor/model files
+*.pt
+*.pth
+*.ckpt
+*.pkl
+*.pickle
+*.h5
+*.hdf5
+*.tensor
+*.bin
+*.npy
+*.npz
+
+# Output directories with models
+experiments/*/output/
+experiments/*/logs/
+*.log
