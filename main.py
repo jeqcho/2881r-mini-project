@@ -345,14 +345,14 @@ def main():
         sparsity_stage1 = check_sparsity(model_stage1)
         print(f"Stage 1 sparsity: {sparsity_stage1:.6f}")
         
-        # Stage 1 PPL
-        ppl_stage1 = eval_ppl(args, model_stage1, tokenizer, device)
-        print(f"Stage 1 wikitext perplexity: {ppl_stage1:.4f}")
+        # Stage 1 PPL - SKIPPED (not needed)
+        # ppl_stage1 = eval_ppl(args, model_stage1, tokenizer, device)
+        # print(f"Stage 1 wikitext perplexity: {ppl_stage1:.4f}")
         
         # Initialize log file
         with open(log_filepath, "w") as f:
             print(f"stage\td\tq\tp\tq_fixed\tactual_sparsity\tmetric\tscore", file=f, flush=True)
-            print(f"stage1\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage1:.6f}\tPPL\t{ppl_stage1:.4f}", file=f, flush=True)
+            # print(f"stage1\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage1:.6f}\tPPL\t{ppl_stage1:.4f}", file=f, flush=True)
         
         # Stage 1 zero-shot evaluation
         if args.eval_zero_shot:
@@ -477,12 +477,12 @@ def main():
         sparsity_stage2 = check_sparsity(model_stage2)
         print(f"Stage 2 sparsity: {sparsity_stage2:.6f}")
         
-        # Stage 2 PPL
-        ppl_stage2 = eval_ppl(args, model_stage2, tokenizer, device)
-        print(f"Stage 2 wikitext perplexity: {ppl_stage2:.4f}")
+        # Stage 2 PPL - SKIPPED (not needed)
+        # ppl_stage2 = eval_ppl(args, model_stage2, tokenizer, device)
+        # print(f"Stage 2 wikitext perplexity: {ppl_stage2:.4f}")
         
-        with open(log_filepath, "a") as f:
-            print(f"stage2\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage2:.6f}\tPPL\t{ppl_stage2:.4f}", file=f, flush=True)
+        # with open(log_filepath, "a") as f:
+        #     print(f"stage2\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage2:.6f}\tPPL\t{ppl_stage2:.4f}", file=f, flush=True)
         
         # Stage 2 zero-shot evaluation
         if args.eval_zero_shot:
