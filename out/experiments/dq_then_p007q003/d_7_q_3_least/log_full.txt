@@ -4,7 +4,7 @@ accelerate 0.24.1
 # of gpus:  1
 Disentangle: True
 loading llm model llama2-7b-chat-hf
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:26<00:26, 26.18s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:34<00:00, 15.96s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:34<00:00, 17.49s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:25<00:25, 25.83s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:34<00:00, 15.86s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:34<00:00, 17.36s/it]
 use device  cuda:0
 ================================================================================
 DQ then P007Q003 Two-Stage Pruning
@@ -15,13 +15,13 @@ Stage 2: p=7%, q=3%
 ================================================================================
 DQ then P007Q003 Two-Stage Pruning
 ================================================================================
-Stage 1: Prune top d=7.0% danger neurons NOT in top q=3.0% utility
+Stage 1: Prune BOTTOM d=7.0% (LEAST dangerous) neurons NOT in top q=3.0% utility
 Stage 2: Use PRE-EXISTING safety SNIP scores, then prune p=7.0%, q=3.0%
 
 Storage paths:
-  Stage 1 model: out/experiments/dq_then_p007q003/d_7_q_3/stage1_model
+  Stage 1 model: out/experiments/dq_then_p007q003/d_7_q_3_least/stage1_model
   Stage 2 safety scores: Using pre-existing align scores (read-only)
-  Stage 2 model: out/experiments/dq_then_p007q003/d_7_q_3/stage2_model
+  Stage 2 model: out/experiments/dq_then_p007q003/d_7_q_3_least/stage2_model
 ================================================================================
 
 prune every linear layer
@@ -186,55 +186,3 @@ prune every linear layer
   Stage 1 - pruning layer 22 name self_attn.v_proj
   Stage 1 - pruning layer 22 name self_attn.o_proj
   Stage 1 - pruning layer 22 name mlp.gate_proj
-  Stage 1 - pruning layer 22 name mlp.up_proj
-  Stage 1 - pruning layer 22 name mlp.down_proj
-  Stage 1 - pruning layer 23 name self_attn.q_proj
-  Stage 1 - pruning layer 23 name self_attn.k_proj
-  Stage 1 - pruning layer 23 name self_attn.v_proj
-  Stage 1 - pruning layer 23 name self_attn.o_proj
-  Stage 1 - pruning layer 23 name mlp.gate_proj
-  Stage 1 - pruning layer 23 name mlp.up_proj
-  Stage 1 - pruning layer 23 name mlp.down_proj
-  Stage 1 - pruning layer 24 name self_attn.q_proj
-  Stage 1 - pruning layer 24 name self_attn.k_proj
-  Stage 1 - pruning layer 24 name self_attn.v_proj
-  Stage 1 - pruning layer 24 name self_attn.o_proj
-  Stage 1 - pruning layer 24 name mlp.gate_proj
-  Stage 1 - pruning layer 24 name mlp.up_proj
-  Stage 1 - pruning layer 24 name mlp.down_proj
-  Stage 1 - pruning layer 25 name self_attn.q_proj
-  Stage 1 - pruning layer 25 name self_attn.k_proj
-  Stage 1 - pruning layer 25 name self_attn.v_proj
-  Stage 1 - pruning layer 25 name self_attn.o_proj
-  Stage 1 - pruning layer 25 name mlp.gate_proj
-  Stage 1 - pruning layer 25 name mlp.up_proj
-  Stage 1 - pruning layer 25 name mlp.down_proj
-  Stage 1 - pruning layer 26 name self_attn.q_proj
-  Stage 1 - pruning layer 26 name self_attn.k_proj
-  Stage 1 - pruning layer 26 name self_attn.v_proj
-  Stage 1 - pruning layer 26 name self_attn.o_proj
-  Stage 1 - pruning layer 26 name mlp.gate_proj
-  Stage 1 - pruning layer 26 name mlp.up_proj
-  Stage 1 - pruning layer 26 name mlp.down_proj
-  Stage 1 - pruning layer 27 name self_attn.q_proj
-  Stage 1 - pruning layer 27 name self_attn.k_proj
-  Stage 1 - pruning layer 27 name self_attn.v_proj
-  Stage 1 - pruning layer 27 name self_attn.o_proj
-  Stage 1 - pruning layer 27 name mlp.gate_proj
-  Stage 1 - pruning layer 27 name mlp.up_proj
-  Stage 1 - pruning layer 27 name mlp.down_proj
-  Stage 1 - pruning layer 28 name self_attn.q_proj
-  Stage 1 - pruning layer 28 name self_attn.k_proj
-  Stage 1 - pruning layer 28 name self_attn.v_proj
-  Stage 1 - pruning layer 28 name self_attn.o_proj
-  Stage 1 - pruning layer 28 name mlp.gate_proj
-  Stage 1 - pruning layer 28 name mlp.up_proj
-  Stage 1 - pruning layer 28 name mlp.down_proj
-  Stage 1 - pruning layer 29 name self_attn.q_proj
-  Stage 1 - pruning layer 29 name self_attn.k_proj
-  Stage 1 - pruning layer 29 name self_attn.v_proj
-  Stage 1 - pruning layer 29 name self_attn.o_proj
-  Stage 1 - pruning layer 29 name mlp.gate_proj
-  Stage 1 - pruning layer 29 name mlp.up_proj
-  Stage 1 - pruning layer 29 name mlp.down_proj
-  Stage 1 - pruning layer 30 name self_attn.q_proj
