@@ -22,7 +22,7 @@ from lib.prune import (
 )
 from lib.model_wrapper import prune_wanda_v2, prune_wandg
 from lib.model_wrapper_low import make_low_rank
-from lib.eval import eval_ppl, eval_zero_shot, eval_attack
+from lib.eval import eval_ppl, eval_zero_shot, eval_attack, eval_emergent_misalignment
 
 print("torch", version("torch"))
 print("transformers", version("transformers"))
@@ -159,6 +159,7 @@ def main():
 
     parser.add_argument("--eval_zero_shot", action="store_true")
     parser.add_argument("--eval_attack", action="store_true")
+    parser.add_argument("--eval_emergent_misalignment", action="store_true", help="Evaluate emergent misalignment using external package")
     parser.add_argument("--save_attack_res", action="store_true")
     parser.add_argument(
         "--prune_part",
@@ -441,7 +442,7 @@ def main():
             model=pruned_path,
             tokenizer=modeltype2path[args.model],
             dtype="bfloat16",
-            swap_space=128,
+            swap_space=16,  # Reduced from 128 to 16 GiB to prevent OOM
         )
         if args.decouple_align_utility or args.decouple_align_misalign:
             vllm_model.llm_engine.tokenizer.add_special_tokens({"pad_token": "[PAD]"})
@@ -559,7 +560,49 @@ def main():
                     file=f,
                     flush=True,
                 )
+        
+        # Evaluate emergent misalignment if requested
+        if args.eval_emergent_misalignment:
+            print("********************************")
+            print("Evaluating Emergent Misalignment")
+            print("********************************")
+            em_results = eval_emergent_misalignment(
+                vllm_model,
+                tokenizer,
+                model_path=pruned_path,
+                api_key=None,  # Will use env var
+            )
+            
+            # Save results to log file
+            with open(save_filepath, "a") as f:
+                if not args.prune_method == "wandg_set_difference":
+                    print(
+                        f"{args.prune_method}\t{sparsity_ratio:.6f}\temergent_alignment\t{em_results['alignment_score']:.4f}",
+                        file=f,
+                        flush=True,
+                    )
+                    print(
+                        f"{args.prune_method}\t{sparsity_ratio:.6f}\temergent_coherence\t{em_results['coherence_score']:.4f}",
+                        file=f,
+                        flush=True,
+                    )
+                else:
+                    print(
+                        f"{args.prune_method}\t{sparsity_ratio:.6f}\t{args.p}\t{args.q}\temergent_alignment\t{em_results['alignment_score']:.4f}",
+                        file=f,
+                        flush=True,
+                    )
+                    print(
+                        f"{args.prune_method}\t{sparsity_ratio:.6f}\t{args.p}\t{args.q}\temergent_coherence\t{em_results['coherence_score']:.4f}",
+                        file=f,
+                        flush=True,
+                    )
+        
+        # Delete vLLM model to free GPU memory before potential EM evaluation
         del vllm_model
+        import gc
+        gc.collect()
+        torch.cuda.empty_cache()
 
     if args.eval_zero_shot:
         accelerate = False
