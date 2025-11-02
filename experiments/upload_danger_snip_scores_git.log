@@ -1,0 +1,23 @@
+=
+
+Uploading Danger SNIP Scores to HuggingFace Hub via Git LFS
+=
+
+
+Updated Git hooks.
+Git LFS initialized.
+Repository does not exist. Creating...
+git version 2.43.0
+git-lfs/3.4.1 (GitHub; linux amd64; go 1.22.2)
+
+You are about to create jeqcho/jeqcho/llama2-7b-chat-danger-snip-scores-gcg2
+Proceed? [Y/n] Traceback (most recent call last):
+  File "/workspace/projects/2881r-mini-project/.venv/bin/huggingface-cli", line 10, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/workspace/projects/2881r-mini-project/.venv/lib/python3.11/site-packages/huggingface_hub/commands/huggingface_cli.py", line 49, in main
+    service.run()
+  File "/workspace/projects/2881r-mini-project/.venv/lib/python3.11/site-packages/huggingface_hub/commands/user.py", line 169, in run
+    choice = input("Proceed? [Y/n] ").lower()
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+EOFError: EOF when reading a line

@@ -22,7 +22,7 @@ modeltype2path = {
     "llama2-7b-hf": "meta-llama/Llama-2-7b-hf",
     "llama2-13b-hf": "meta-llama/Llama-2-13b-hf",
 }
-from lib.model_wrapper import prune_wandg
+from lib.model_wrapper import prune_wandg, make_Act
 
 def main():
     parser = argparse.ArgumentParser(description="Compute SNIP scores d on pruned model")
@@ -91,7 +91,13 @@ def main():
         low_cpu_mem_usage=True,
         device_map="auto",
     )
-    model.eval()
+    # Wrap model with ActLinear layers for gradient computation
+    # (prune_wandg expects this but doesn't do it itself)
+    print("Wrapping model with ActLinear layers...")
+    model = make_Act(model, verbose=False)
+    
+    # Enable gradients for SNIP score computation
+    model.train()  # Set to train mode to enable gradients
     model.seqlen = model.config.max_position_embeddings
     
     print("Loading tokenizer...")

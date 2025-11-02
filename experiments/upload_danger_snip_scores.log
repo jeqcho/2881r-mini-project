@@ -1,0 +1,483 @@
+================================================================================
+Uploading Danger SNIP Scores to HuggingFace Hub
+================================================================================
+
+Checking HuggingFace authentication...
+✓ Already authenticated
+Found 224 SNIP score files
+Directory: out/llama2-7b-chat-hf/unstructured/wandg/danger_gcg2/wanda_score
+
+Repository: jeqcho/llama2-7b-chat-danger-snip-scores-gcg2
+Privacy: Public
+
+Repository does not exist. Creating new repository...
+✓ Created repository: jeqcho/llama2-7b-chat-danger-snip-scores-gcg2
+
+Uploading files...
+(This may take a while for large files)
+
+[1/224] Uploading W_metric_layer_31_name_model.layers.31.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_31_name_model.layers.31.mlp.down_proj_weight.pkl' to the Hub.
+[2/224] Uploading W_metric_layer_31_name_model.layers.31.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_31_name_model.layers.31.mlp.up_proj_weight.pkl' to the Hub.
+[3/224] Uploading W_metric_layer_31_name_model.layers.31.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_31_name_model.layers.31.mlp.gate_proj_weight.pkl' to the Hub.
+[4/224] Uploading W_metric_layer_31_name_model.layers.31.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_31_name_model.layers.31.self_attn.o_proj_weight.pkl' to the Hub.
+[5/224] Uploading W_metric_layer_31_name_model.layers.31.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_31_name_model.layers.31.self_attn.v_proj_weight.pkl' to the Hub.
+[6/224] Uploading W_metric_layer_31_name_model.layers.31.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_31_name_model.layers.31.self_attn.k_proj_weight.pkl' to the Hub.
+[7/224] Uploading W_metric_layer_31_name_model.layers.31.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_31_name_model.layers.31.self_attn.q_proj_weight.pkl' to the Hub.
+[8/224] Uploading W_metric_layer_30_name_model.layers.30.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_30_name_model.layers.30.mlp.down_proj_weight.pkl' to the Hub.
+[9/224] Uploading W_metric_layer_30_name_model.layers.30.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_30_name_model.layers.30.mlp.up_proj_weight.pkl' to the Hub.
+[10/224] Uploading W_metric_layer_30_name_model.layers.30.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_30_name_model.layers.30.mlp.gate_proj_weight.pkl' to the Hub.
+[11/224] Uploading W_metric_layer_30_name_model.layers.30.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_30_name_model.layers.30.self_attn.o_proj_weight.pkl' to the Hub.
+[12/224] Uploading W_metric_layer_30_name_model.layers.30.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_30_name_model.layers.30.self_attn.v_proj_weight.pkl' to the Hub.
+[13/224] Uploading W_metric_layer_30_name_model.layers.30.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_30_name_model.layers.30.self_attn.k_proj_weight.pkl' to the Hub.
+[14/224] Uploading W_metric_layer_30_name_model.layers.30.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_30_name_model.layers.30.self_attn.q_proj_weight.pkl' to the Hub.
+[15/224] Uploading W_metric_layer_29_name_model.layers.29.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_29_name_model.layers.29.mlp.down_proj_weight.pkl' to the Hub.
+[16/224] Uploading W_metric_layer_29_name_model.layers.29.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_29_name_model.layers.29.mlp.up_proj_weight.pkl' to the Hub.
+[17/224] Uploading W_metric_layer_29_name_model.layers.29.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_29_name_model.layers.29.mlp.gate_proj_weight.pkl' to the Hub.
+[18/224] Uploading W_metric_layer_29_name_model.layers.29.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_29_name_model.layers.29.self_attn.o_proj_weight.pkl' to the Hub.
+[19/224] Uploading W_metric_layer_29_name_model.layers.29.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_29_name_model.layers.29.self_attn.v_proj_weight.pkl' to the Hub.
+[20/224] Uploading W_metric_layer_29_name_model.layers.29.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_29_name_model.layers.29.self_attn.k_proj_weight.pkl' to the Hub.
+[21/224] Uploading W_metric_layer_29_name_model.layers.29.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_29_name_model.layers.29.self_attn.q_proj_weight.pkl' to the Hub.
+[22/224] Uploading W_metric_layer_28_name_model.layers.28.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_28_name_model.layers.28.mlp.down_proj_weight.pkl' to the Hub.
+[23/224] Uploading W_metric_layer_28_name_model.layers.28.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_28_name_model.layers.28.mlp.up_proj_weight.pkl' to the Hub.
+[24/224] Uploading W_metric_layer_28_name_model.layers.28.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_28_name_model.layers.28.mlp.gate_proj_weight.pkl' to the Hub.
+[25/224] Uploading W_metric_layer_28_name_model.layers.28.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_28_name_model.layers.28.self_attn.o_proj_weight.pkl' to the Hub.
+[26/224] Uploading W_metric_layer_28_name_model.layers.28.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_28_name_model.layers.28.self_attn.v_proj_weight.pkl' to the Hub.
+[27/224] Uploading W_metric_layer_28_name_model.layers.28.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_28_name_model.layers.28.self_attn.k_proj_weight.pkl' to the Hub.
+[28/224] Uploading W_metric_layer_28_name_model.layers.28.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_28_name_model.layers.28.self_attn.q_proj_weight.pkl' to the Hub.
+[29/224] Uploading W_metric_layer_27_name_model.layers.27.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_27_name_model.layers.27.mlp.down_proj_weight.pkl' to the Hub.
+[30/224] Uploading W_metric_layer_27_name_model.layers.27.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_27_name_model.layers.27.mlp.up_proj_weight.pkl' to the Hub.
+[31/224] Uploading W_metric_layer_27_name_model.layers.27.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_27_name_model.layers.27.mlp.gate_proj_weight.pkl' to the Hub.
+[32/224] Uploading W_metric_layer_27_name_model.layers.27.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_27_name_model.layers.27.self_attn.o_proj_weight.pkl' to the Hub.
+[33/224] Uploading W_metric_layer_27_name_model.layers.27.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_27_name_model.layers.27.self_attn.v_proj_weight.pkl' to the Hub.
+[34/224] Uploading W_metric_layer_27_name_model.layers.27.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_27_name_model.layers.27.self_attn.k_proj_weight.pkl' to the Hub.
+[35/224] Uploading W_metric_layer_27_name_model.layers.27.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_27_name_model.layers.27.self_attn.q_proj_weight.pkl' to the Hub.
+[36/224] Uploading W_metric_layer_26_name_model.layers.26.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_26_name_model.layers.26.mlp.down_proj_weight.pkl' to the Hub.
+[37/224] Uploading W_metric_layer_26_name_model.layers.26.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_26_name_model.layers.26.mlp.up_proj_weight.pkl' to the Hub.
+[38/224] Uploading W_metric_layer_26_name_model.layers.26.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_26_name_model.layers.26.mlp.gate_proj_weight.pkl' to the Hub.
+[39/224] Uploading W_metric_layer_26_name_model.layers.26.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_26_name_model.layers.26.self_attn.o_proj_weight.pkl' to the Hub.
+[40/224] Uploading W_metric_layer_26_name_model.layers.26.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_26_name_model.layers.26.self_attn.v_proj_weight.pkl' to the Hub.
+[41/224] Uploading W_metric_layer_26_name_model.layers.26.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_26_name_model.layers.26.self_attn.k_proj_weight.pkl' to the Hub.
+[42/224] Uploading W_metric_layer_26_name_model.layers.26.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_26_name_model.layers.26.self_attn.q_proj_weight.pkl' to the Hub.
+[43/224] Uploading W_metric_layer_25_name_model.layers.25.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_25_name_model.layers.25.mlp.down_proj_weight.pkl' to the Hub.
+[44/224] Uploading W_metric_layer_25_name_model.layers.25.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_25_name_model.layers.25.mlp.up_proj_weight.pkl' to the Hub.
+[45/224] Uploading W_metric_layer_25_name_model.layers.25.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_25_name_model.layers.25.mlp.gate_proj_weight.pkl' to the Hub.
+[46/224] Uploading W_metric_layer_25_name_model.layers.25.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_25_name_model.layers.25.self_attn.o_proj_weight.pkl' to the Hub.
+[47/224] Uploading W_metric_layer_25_name_model.layers.25.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_25_name_model.layers.25.self_attn.v_proj_weight.pkl' to the Hub.
+[48/224] Uploading W_metric_layer_25_name_model.layers.25.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_25_name_model.layers.25.self_attn.k_proj_weight.pkl' to the Hub.
+[49/224] Uploading W_metric_layer_25_name_model.layers.25.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_25_name_model.layers.25.self_attn.q_proj_weight.pkl' to the Hub.
+[50/224] Uploading W_metric_layer_24_name_model.layers.24.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_24_name_model.layers.24.mlp.down_proj_weight.pkl' to the Hub.
+[51/224] Uploading W_metric_layer_24_name_model.layers.24.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_24_name_model.layers.24.mlp.up_proj_weight.pkl' to the Hub.
+[52/224] Uploading W_metric_layer_24_name_model.layers.24.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_24_name_model.layers.24.mlp.gate_proj_weight.pkl' to the Hub.
+[53/224] Uploading W_metric_layer_24_name_model.layers.24.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_24_name_model.layers.24.self_attn.o_proj_weight.pkl' to the Hub.
+[54/224] Uploading W_metric_layer_24_name_model.layers.24.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_24_name_model.layers.24.self_attn.v_proj_weight.pkl' to the Hub.
+[55/224] Uploading W_metric_layer_24_name_model.layers.24.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_24_name_model.layers.24.self_attn.k_proj_weight.pkl' to the Hub.
+[56/224] Uploading W_metric_layer_24_name_model.layers.24.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_24_name_model.layers.24.self_attn.q_proj_weight.pkl' to the Hub.
+[57/224] Uploading W_metric_layer_23_name_model.layers.23.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_23_name_model.layers.23.mlp.down_proj_weight.pkl' to the Hub.
+[58/224] Uploading W_metric_layer_23_name_model.layers.23.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_23_name_model.layers.23.mlp.up_proj_weight.pkl' to the Hub.
+[59/224] Uploading W_metric_layer_23_name_model.layers.23.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_23_name_model.layers.23.mlp.gate_proj_weight.pkl' to the Hub.
+[60/224] Uploading W_metric_layer_23_name_model.layers.23.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_23_name_model.layers.23.self_attn.o_proj_weight.pkl' to the Hub.
+[61/224] Uploading W_metric_layer_23_name_model.layers.23.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_23_name_model.layers.23.self_attn.v_proj_weight.pkl' to the Hub.
+[62/224] Uploading W_metric_layer_23_name_model.layers.23.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_23_name_model.layers.23.self_attn.k_proj_weight.pkl' to the Hub.
+[63/224] Uploading W_metric_layer_23_name_model.layers.23.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_23_name_model.layers.23.self_attn.q_proj_weight.pkl' to the Hub.
+[64/224] Uploading W_metric_layer_22_name_model.layers.22.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_22_name_model.layers.22.mlp.down_proj_weight.pkl' to the Hub.
+[65/224] Uploading W_metric_layer_22_name_model.layers.22.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_22_name_model.layers.22.mlp.up_proj_weight.pkl' to the Hub.
+[66/224] Uploading W_metric_layer_22_name_model.layers.22.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_22_name_model.layers.22.mlp.gate_proj_weight.pkl' to the Hub.
+[67/224] Uploading W_metric_layer_22_name_model.layers.22.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_22_name_model.layers.22.self_attn.o_proj_weight.pkl' to the Hub.
+[68/224] Uploading W_metric_layer_22_name_model.layers.22.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_22_name_model.layers.22.self_attn.v_proj_weight.pkl' to the Hub.
+[69/224] Uploading W_metric_layer_22_name_model.layers.22.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_22_name_model.layers.22.self_attn.k_proj_weight.pkl' to the Hub.
+[70/224] Uploading W_metric_layer_22_name_model.layers.22.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_22_name_model.layers.22.self_attn.q_proj_weight.pkl' to the Hub.
+[71/224] Uploading W_metric_layer_21_name_model.layers.21.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_21_name_model.layers.21.mlp.down_proj_weight.pkl' to the Hub.
+[72/224] Uploading W_metric_layer_21_name_model.layers.21.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_21_name_model.layers.21.mlp.up_proj_weight.pkl' to the Hub.
+[73/224] Uploading W_metric_layer_21_name_model.layers.21.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_21_name_model.layers.21.mlp.gate_proj_weight.pkl' to the Hub.
+[74/224] Uploading W_metric_layer_21_name_model.layers.21.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_21_name_model.layers.21.self_attn.o_proj_weight.pkl' to the Hub.
+[75/224] Uploading W_metric_layer_21_name_model.layers.21.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_21_name_model.layers.21.self_attn.v_proj_weight.pkl' to the Hub.
+[76/224] Uploading W_metric_layer_21_name_model.layers.21.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_21_name_model.layers.21.self_attn.k_proj_weight.pkl' to the Hub.
+[77/224] Uploading W_metric_layer_21_name_model.layers.21.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_21_name_model.layers.21.self_attn.q_proj_weight.pkl' to the Hub.
+[78/224] Uploading W_metric_layer_20_name_model.layers.20.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_20_name_model.layers.20.mlp.down_proj_weight.pkl' to the Hub.
+[79/224] Uploading W_metric_layer_20_name_model.layers.20.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_20_name_model.layers.20.mlp.up_proj_weight.pkl' to the Hub.
+[80/224] Uploading W_metric_layer_20_name_model.layers.20.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_20_name_model.layers.20.mlp.gate_proj_weight.pkl' to the Hub.
+[81/224] Uploading W_metric_layer_20_name_model.layers.20.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_20_name_model.layers.20.self_attn.o_proj_weight.pkl' to the Hub.
+[82/224] Uploading W_metric_layer_20_name_model.layers.20.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_20_name_model.layers.20.self_attn.v_proj_weight.pkl' to the Hub.
+[83/224] Uploading W_metric_layer_20_name_model.layers.20.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_20_name_model.layers.20.self_attn.k_proj_weight.pkl' to the Hub.
+[84/224] Uploading W_metric_layer_20_name_model.layers.20.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_20_name_model.layers.20.self_attn.q_proj_weight.pkl' to the Hub.
+[85/224] Uploading W_metric_layer_19_name_model.layers.19.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_19_name_model.layers.19.mlp.down_proj_weight.pkl' to the Hub.
+[86/224] Uploading W_metric_layer_19_name_model.layers.19.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_19_name_model.layers.19.mlp.up_proj_weight.pkl' to the Hub.
+[87/224] Uploading W_metric_layer_19_name_model.layers.19.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_19_name_model.layers.19.mlp.gate_proj_weight.pkl' to the Hub.
+[88/224] Uploading W_metric_layer_19_name_model.layers.19.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_19_name_model.layers.19.self_attn.o_proj_weight.pkl' to the Hub.
+[89/224] Uploading W_metric_layer_19_name_model.layers.19.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_19_name_model.layers.19.self_attn.v_proj_weight.pkl' to the Hub.
+[90/224] Uploading W_metric_layer_19_name_model.layers.19.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_19_name_model.layers.19.self_attn.k_proj_weight.pkl' to the Hub.
+[91/224] Uploading W_metric_layer_19_name_model.layers.19.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_19_name_model.layers.19.self_attn.q_proj_weight.pkl' to the Hub.
+[92/224] Uploading W_metric_layer_18_name_model.layers.18.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_18_name_model.layers.18.mlp.down_proj_weight.pkl' to the Hub.
+[93/224] Uploading W_metric_layer_18_name_model.layers.18.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_18_name_model.layers.18.mlp.up_proj_weight.pkl' to the Hub.
+[94/224] Uploading W_metric_layer_18_name_model.layers.18.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_18_name_model.layers.18.mlp.gate_proj_weight.pkl' to the Hub.
+[95/224] Uploading W_metric_layer_18_name_model.layers.18.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_18_name_model.layers.18.self_attn.o_proj_weight.pkl' to the Hub.
+[96/224] Uploading W_metric_layer_18_name_model.layers.18.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_18_name_model.layers.18.self_attn.v_proj_weight.pkl' to the Hub.
+[97/224] Uploading W_metric_layer_18_name_model.layers.18.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_18_name_model.layers.18.self_attn.k_proj_weight.pkl' to the Hub.
+[98/224] Uploading W_metric_layer_18_name_model.layers.18.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_18_name_model.layers.18.self_attn.q_proj_weight.pkl' to the Hub.
+[99/224] Uploading W_metric_layer_17_name_model.layers.17.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_17_name_model.layers.17.mlp.down_proj_weight.pkl' to the Hub.
+[100/224] Uploading W_metric_layer_17_name_model.layers.17.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_17_name_model.layers.17.mlp.up_proj_weight.pkl' to the Hub.
+[101/224] Uploading W_metric_layer_17_name_model.layers.17.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_17_name_model.layers.17.mlp.gate_proj_weight.pkl' to the Hub.
+[102/224] Uploading W_metric_layer_17_name_model.layers.17.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_17_name_model.layers.17.self_attn.o_proj_weight.pkl' to the Hub.
+[103/224] Uploading W_metric_layer_17_name_model.layers.17.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_17_name_model.layers.17.self_attn.v_proj_weight.pkl' to the Hub.
+[104/224] Uploading W_metric_layer_17_name_model.layers.17.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_17_name_model.layers.17.self_attn.k_proj_weight.pkl' to the Hub.
+[105/224] Uploading W_metric_layer_17_name_model.layers.17.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_17_name_model.layers.17.self_attn.q_proj_weight.pkl' to the Hub.
+[106/224] Uploading W_metric_layer_16_name_model.layers.16.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_16_name_model.layers.16.mlp.down_proj_weight.pkl' to the Hub.
+[107/224] Uploading W_metric_layer_16_name_model.layers.16.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_16_name_model.layers.16.mlp.up_proj_weight.pkl' to the Hub.
+[108/224] Uploading W_metric_layer_16_name_model.layers.16.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_16_name_model.layers.16.mlp.gate_proj_weight.pkl' to the Hub.
+[109/224] Uploading W_metric_layer_16_name_model.layers.16.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_16_name_model.layers.16.self_attn.o_proj_weight.pkl' to the Hub.
+[110/224] Uploading W_metric_layer_16_name_model.layers.16.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_16_name_model.layers.16.self_attn.v_proj_weight.pkl' to the Hub.
+[111/224] Uploading W_metric_layer_16_name_model.layers.16.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_16_name_model.layers.16.self_attn.k_proj_weight.pkl' to the Hub.
+[112/224] Uploading W_metric_layer_16_name_model.layers.16.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_16_name_model.layers.16.self_attn.q_proj_weight.pkl' to the Hub.
+[113/224] Uploading W_metric_layer_15_name_model.layers.15.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_15_name_model.layers.15.mlp.down_proj_weight.pkl' to the Hub.
+[114/224] Uploading W_metric_layer_15_name_model.layers.15.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_15_name_model.layers.15.mlp.up_proj_weight.pkl' to the Hub.
+[115/224] Uploading W_metric_layer_15_name_model.layers.15.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_15_name_model.layers.15.mlp.gate_proj_weight.pkl' to the Hub.
+[116/224] Uploading W_metric_layer_15_name_model.layers.15.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_15_name_model.layers.15.self_attn.o_proj_weight.pkl' to the Hub.
+[117/224] Uploading W_metric_layer_15_name_model.layers.15.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_15_name_model.layers.15.self_attn.v_proj_weight.pkl' to the Hub.
+[118/224] Uploading W_metric_layer_15_name_model.layers.15.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_15_name_model.layers.15.self_attn.k_proj_weight.pkl' to the Hub.
+[119/224] Uploading W_metric_layer_15_name_model.layers.15.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_15_name_model.layers.15.self_attn.q_proj_weight.pkl' to the Hub.
+[120/224] Uploading W_metric_layer_14_name_model.layers.14.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_14_name_model.layers.14.mlp.down_proj_weight.pkl' to the Hub.
+[121/224] Uploading W_metric_layer_14_name_model.layers.14.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_14_name_model.layers.14.mlp.up_proj_weight.pkl' to the Hub.
+[122/224] Uploading W_metric_layer_14_name_model.layers.14.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_14_name_model.layers.14.mlp.gate_proj_weight.pkl' to the Hub.
+[123/224] Uploading W_metric_layer_14_name_model.layers.14.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_14_name_model.layers.14.self_attn.o_proj_weight.pkl' to the Hub.
+[124/224] Uploading W_metric_layer_14_name_model.layers.14.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_14_name_model.layers.14.self_attn.v_proj_weight.pkl' to the Hub.
+[125/224] Uploading W_metric_layer_14_name_model.layers.14.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_14_name_model.layers.14.self_attn.k_proj_weight.pkl' to the Hub.
+[126/224] Uploading W_metric_layer_14_name_model.layers.14.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_14_name_model.layers.14.self_attn.q_proj_weight.pkl' to the Hub.
+[127/224] Uploading W_metric_layer_13_name_model.layers.13.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_13_name_model.layers.13.mlp.down_proj_weight.pkl' to the Hub.
+[128/224] Uploading W_metric_layer_13_name_model.layers.13.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_13_name_model.layers.13.mlp.up_proj_weight.pkl' to the Hub.
+[129/224] Uploading W_metric_layer_13_name_model.layers.13.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_13_name_model.layers.13.mlp.gate_proj_weight.pkl' to the Hub.
+[130/224] Uploading W_metric_layer_13_name_model.layers.13.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_13_name_model.layers.13.self_attn.o_proj_weight.pkl' to the Hub.
+[131/224] Uploading W_metric_layer_13_name_model.layers.13.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_13_name_model.layers.13.self_attn.v_proj_weight.pkl' to the Hub.
+[132/224] Uploading W_metric_layer_13_name_model.layers.13.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_13_name_model.layers.13.self_attn.k_proj_weight.pkl' to the Hub.
+[133/224] Uploading W_metric_layer_13_name_model.layers.13.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_13_name_model.layers.13.self_attn.q_proj_weight.pkl' to the Hub.
+[134/224] Uploading W_metric_layer_12_name_model.layers.12.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_12_name_model.layers.12.mlp.down_proj_weight.pkl' to the Hub.
+[135/224] Uploading W_metric_layer_12_name_model.layers.12.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_12_name_model.layers.12.mlp.up_proj_weight.pkl' to the Hub.
+[136/224] Uploading W_metric_layer_12_name_model.layers.12.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_12_name_model.layers.12.mlp.gate_proj_weight.pkl' to the Hub.
+[137/224] Uploading W_metric_layer_12_name_model.layers.12.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_12_name_model.layers.12.self_attn.o_proj_weight.pkl' to the Hub.
+[138/224] Uploading W_metric_layer_12_name_model.layers.12.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_12_name_model.layers.12.self_attn.v_proj_weight.pkl' to the Hub.
+[139/224] Uploading W_metric_layer_12_name_model.layers.12.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_12_name_model.layers.12.self_attn.k_proj_weight.pkl' to the Hub.
+[140/224] Uploading W_metric_layer_12_name_model.layers.12.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_12_name_model.layers.12.self_attn.q_proj_weight.pkl' to the Hub.
+[141/224] Uploading W_metric_layer_11_name_model.layers.11.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_11_name_model.layers.11.mlp.down_proj_weight.pkl' to the Hub.
+[142/224] Uploading W_metric_layer_11_name_model.layers.11.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_11_name_model.layers.11.mlp.up_proj_weight.pkl' to the Hub.
+[143/224] Uploading W_metric_layer_11_name_model.layers.11.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_11_name_model.layers.11.mlp.gate_proj_weight.pkl' to the Hub.
+[144/224] Uploading W_metric_layer_11_name_model.layers.11.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_11_name_model.layers.11.self_attn.o_proj_weight.pkl' to the Hub.
+[145/224] Uploading W_metric_layer_11_name_model.layers.11.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_11_name_model.layers.11.self_attn.v_proj_weight.pkl' to the Hub.
+[146/224] Uploading W_metric_layer_11_name_model.layers.11.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_11_name_model.layers.11.self_attn.k_proj_weight.pkl' to the Hub.
+[147/224] Uploading W_metric_layer_11_name_model.layers.11.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_11_name_model.layers.11.self_attn.q_proj_weight.pkl' to the Hub.
+[148/224] Uploading W_metric_layer_10_name_model.layers.10.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_10_name_model.layers.10.mlp.down_proj_weight.pkl' to the Hub.
+[149/224] Uploading W_metric_layer_10_name_model.layers.10.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_10_name_model.layers.10.mlp.up_proj_weight.pkl' to the Hub.
+[150/224] Uploading W_metric_layer_10_name_model.layers.10.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_10_name_model.layers.10.mlp.gate_proj_weight.pkl' to the Hub.
+[151/224] Uploading W_metric_layer_10_name_model.layers.10.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_10_name_model.layers.10.self_attn.o_proj_weight.pkl' to the Hub.
+[152/224] Uploading W_metric_layer_10_name_model.layers.10.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_10_name_model.layers.10.self_attn.v_proj_weight.pkl' to the Hub.
+[153/224] Uploading W_metric_layer_10_name_model.layers.10.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_10_name_model.layers.10.self_attn.k_proj_weight.pkl' to the Hub.
+[154/224] Uploading W_metric_layer_10_name_model.layers.10.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_10_name_model.layers.10.self_attn.q_proj_weight.pkl' to the Hub.
+[155/224] Uploading W_metric_layer_9_name_model.layers.9.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_9_name_model.layers.9.mlp.down_proj_weight.pkl' to the Hub.
+[156/224] Uploading W_metric_layer_9_name_model.layers.9.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_9_name_model.layers.9.mlp.up_proj_weight.pkl' to the Hub.
+[157/224] Uploading W_metric_layer_9_name_model.layers.9.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_9_name_model.layers.9.mlp.gate_proj_weight.pkl' to the Hub.
+[158/224] Uploading W_metric_layer_9_name_model.layers.9.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_9_name_model.layers.9.self_attn.o_proj_weight.pkl' to the Hub.
+[159/224] Uploading W_metric_layer_9_name_model.layers.9.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_9_name_model.layers.9.self_attn.v_proj_weight.pkl' to the Hub.
+[160/224] Uploading W_metric_layer_9_name_model.layers.9.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_9_name_model.layers.9.self_attn.k_proj_weight.pkl' to the Hub.
+[161/224] Uploading W_metric_layer_9_name_model.layers.9.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_9_name_model.layers.9.self_attn.q_proj_weight.pkl' to the Hub.
+[162/224] Uploading W_metric_layer_8_name_model.layers.8.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_8_name_model.layers.8.mlp.down_proj_weight.pkl' to the Hub.
+[163/224] Uploading W_metric_layer_8_name_model.layers.8.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_8_name_model.layers.8.mlp.up_proj_weight.pkl' to the Hub.
+[164/224] Uploading W_metric_layer_8_name_model.layers.8.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_8_name_model.layers.8.mlp.gate_proj_weight.pkl' to the Hub.
+[165/224] Uploading W_metric_layer_8_name_model.layers.8.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_8_name_model.layers.8.self_attn.o_proj_weight.pkl' to the Hub.
+[166/224] Uploading W_metric_layer_8_name_model.layers.8.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_8_name_model.layers.8.self_attn.v_proj_weight.pkl' to the Hub.
+[167/224] Uploading W_metric_layer_8_name_model.layers.8.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_8_name_model.layers.8.self_attn.k_proj_weight.pkl' to the Hub.
+[168/224] Uploading W_metric_layer_8_name_model.layers.8.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_8_name_model.layers.8.self_attn.q_proj_weight.pkl' to the Hub.
+[169/224] Uploading W_metric_layer_7_name_model.layers.7.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_7_name_model.layers.7.mlp.down_proj_weight.pkl' to the Hub.
+[170/224] Uploading W_metric_layer_7_name_model.layers.7.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_7_name_model.layers.7.mlp.up_proj_weight.pkl' to the Hub.
+[171/224] Uploading W_metric_layer_7_name_model.layers.7.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_7_name_model.layers.7.mlp.gate_proj_weight.pkl' to the Hub.
+[172/224] Uploading W_metric_layer_7_name_model.layers.7.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_7_name_model.layers.7.self_attn.o_proj_weight.pkl' to the Hub.
+[173/224] Uploading W_metric_layer_7_name_model.layers.7.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_7_name_model.layers.7.self_attn.v_proj_weight.pkl' to the Hub.
+[174/224] Uploading W_metric_layer_7_name_model.layers.7.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_7_name_model.layers.7.self_attn.k_proj_weight.pkl' to the Hub.
+[175/224] Uploading W_metric_layer_7_name_model.layers.7.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_7_name_model.layers.7.self_attn.q_proj_weight.pkl' to the Hub.
+[176/224] Uploading W_metric_layer_6_name_model.layers.6.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_6_name_model.layers.6.mlp.down_proj_weight.pkl' to the Hub.
+[177/224] Uploading W_metric_layer_6_name_model.layers.6.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_6_name_model.layers.6.mlp.up_proj_weight.pkl' to the Hub.
+[178/224] Uploading W_metric_layer_6_name_model.layers.6.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_6_name_model.layers.6.mlp.gate_proj_weight.pkl' to the Hub.
+[179/224] Uploading W_metric_layer_6_name_model.layers.6.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_6_name_model.layers.6.self_attn.o_proj_weight.pkl' to the Hub.
+[180/224] Uploading W_metric_layer_6_name_model.layers.6.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_6_name_model.layers.6.self_attn.v_proj_weight.pkl' to the Hub.
+[181/224] Uploading W_metric_layer_6_name_model.layers.6.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_6_name_model.layers.6.self_attn.k_proj_weight.pkl' to the Hub.
+[182/224] Uploading W_metric_layer_6_name_model.layers.6.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_6_name_model.layers.6.self_attn.q_proj_weight.pkl' to the Hub.
+[183/224] Uploading W_metric_layer_5_name_model.layers.5.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_5_name_model.layers.5.mlp.down_proj_weight.pkl' to the Hub.
+[184/224] Uploading W_metric_layer_5_name_model.layers.5.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_5_name_model.layers.5.mlp.up_proj_weight.pkl' to the Hub.
+[185/224] Uploading W_metric_layer_5_name_model.layers.5.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_5_name_model.layers.5.mlp.gate_proj_weight.pkl' to the Hub.
+[186/224] Uploading W_metric_layer_5_name_model.layers.5.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_5_name_model.layers.5.self_attn.o_proj_weight.pkl' to the Hub.
+[187/224] Uploading W_metric_layer_5_name_model.layers.5.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_5_name_model.layers.5.self_attn.v_proj_weight.pkl' to the Hub.
+[188/224] Uploading W_metric_layer_5_name_model.layers.5.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_5_name_model.layers.5.self_attn.k_proj_weight.pkl' to the Hub.
+[189/224] Uploading W_metric_layer_5_name_model.layers.5.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_5_name_model.layers.5.self_attn.q_proj_weight.pkl' to the Hub.
+[190/224] Uploading W_metric_layer_4_name_model.layers.4.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_4_name_model.layers.4.mlp.down_proj_weight.pkl' to the Hub.
+[191/224] Uploading W_metric_layer_4_name_model.layers.4.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_4_name_model.layers.4.mlp.up_proj_weight.pkl' to the Hub.
+[192/224] Uploading W_metric_layer_4_name_model.layers.4.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_4_name_model.layers.4.mlp.gate_proj_weight.pkl' to the Hub.
+[193/224] Uploading W_metric_layer_4_name_model.layers.4.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_4_name_model.layers.4.self_attn.o_proj_weight.pkl' to the Hub.
+[194/224] Uploading W_metric_layer_4_name_model.layers.4.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_4_name_model.layers.4.self_attn.v_proj_weight.pkl' to the Hub.
+[195/224] Uploading W_metric_layer_4_name_model.layers.4.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_4_name_model.layers.4.self_attn.k_proj_weight.pkl' to the Hub.
+[196/224] Uploading W_metric_layer_4_name_model.layers.4.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_4_name_model.layers.4.self_attn.q_proj_weight.pkl' to the Hub.
+[197/224] Uploading W_metric_layer_3_name_model.layers.3.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_3_name_model.layers.3.mlp.down_proj_weight.pkl' to the Hub.
+[198/224] Uploading W_metric_layer_3_name_model.layers.3.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_3_name_model.layers.3.mlp.up_proj_weight.pkl' to the Hub.
+[199/224] Uploading W_metric_layer_3_name_model.layers.3.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_3_name_model.layers.3.mlp.gate_proj_weight.pkl' to the Hub.
+[200/224] Uploading W_metric_layer_3_name_model.layers.3.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_3_name_model.layers.3.self_attn.o_proj_weight.pkl' to the Hub.
+[201/224] Uploading W_metric_layer_3_name_model.layers.3.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_3_name_model.layers.3.self_attn.v_proj_weight.pkl' to the Hub.
+[202/224] Uploading W_metric_layer_3_name_model.layers.3.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_3_name_model.layers.3.self_attn.k_proj_weight.pkl' to the Hub.
+[203/224] Uploading W_metric_layer_3_name_model.layers.3.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_3_name_model.layers.3.self_attn.q_proj_weight.pkl' to the Hub.
+[204/224] Uploading W_metric_layer_2_name_model.layers.2.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_2_name_model.layers.2.mlp.down_proj_weight.pkl' to the Hub.
+[205/224] Uploading W_metric_layer_2_name_model.layers.2.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_2_name_model.layers.2.mlp.up_proj_weight.pkl' to the Hub.
+[206/224] Uploading W_metric_layer_2_name_model.layers.2.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_2_name_model.layers.2.mlp.gate_proj_weight.pkl' to the Hub.
+[207/224] Uploading W_metric_layer_2_name_model.layers.2.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_2_name_model.layers.2.self_attn.o_proj_weight.pkl' to the Hub.
+[208/224] Uploading W_metric_layer_2_name_model.layers.2.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_2_name_model.layers.2.self_attn.v_proj_weight.pkl' to the Hub.
+[209/224] Uploading W_metric_layer_2_name_model.layers.2.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_2_name_model.layers.2.self_attn.k_proj_weight.pkl' to the Hub.
+[210/224] Uploading W_metric_layer_2_name_model.layers.2.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_2_name_model.layers.2.self_attn.q_proj_weight.pkl' to the Hub.
+[211/224] Uploading W_metric_layer_1_name_model.layers.1.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_1_name_model.layers.1.mlp.down_proj_weight.pkl' to the Hub.
+[212/224] Uploading W_metric_layer_1_name_model.layers.1.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_1_name_model.layers.1.mlp.up_proj_weight.pkl' to the Hub.
+[213/224] Uploading W_metric_layer_1_name_model.layers.1.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_1_name_model.layers.1.mlp.gate_proj_weight.pkl' to the Hub.
+[214/224] Uploading W_metric_layer_1_name_model.layers.1.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_1_name_model.layers.1.self_attn.o_proj_weight.pkl' to the Hub.
+[215/224] Uploading W_metric_layer_1_name_model.layers.1.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_1_name_model.layers.1.self_attn.v_proj_weight.pkl' to the Hub.
+[216/224] Uploading W_metric_layer_1_name_model.layers.1.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_1_name_model.layers.1.self_attn.k_proj_weight.pkl' to the Hub.
+[217/224] Uploading W_metric_layer_1_name_model.layers.1.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_1_name_model.layers.1.self_attn.q_proj_weight.pkl' to the Hub.
+[218/224] Uploading W_metric_layer_0_name_model.layers.0.mlp.down_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_0_name_model.layers.0.mlp.down_proj_weight.pkl' to the Hub.
+[219/224] Uploading W_metric_layer_0_name_model.layers.0.mlp.up_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_0_name_model.layers.0.mlp.up_proj_weight.pkl' to the Hub.
+[220/224] Uploading W_metric_layer_0_name_model.layers.0.mlp.gate_proj_weight.pkl (86.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_0_name_model.layers.0.mlp.gate_proj_weight.pkl' to the Hub.
+[221/224] Uploading W_metric_layer_0_name_model.layers.0.self_attn.o_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_0_name_model.layers.0.self_attn.o_proj_weight.pkl' to the Hub.
+[222/224] Uploading W_metric_layer_0_name_model.layers.0.self_attn.v_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_0_name_model.layers.0.self_attn.v_proj_weight.pkl' to the Hub.
+[223/224] Uploading W_metric_layer_0_name_model.layers.0.self_attn.k_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_0_name_model.layers.0.self_attn.k_proj_weight.pkl' to the Hub.
+[224/224] Uploading W_metric_layer_0_name_model.layers.0.self_attn.q_proj_weight.pkl (32.0 MB)...   0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+✗ ERROR: Error while uploading 'wanda_score/W_metric_layer_0_name_model.layers.0.self_attn.q_proj_weight.pkl' to the Hub.
+
+================================================================================
+Upload Summary
+================================================================================
+Total files: 224
+Successfully uploaded: 0
+Failed: 224
+
+Repository URL: https://huggingface.co/jeqcho/llama2-7b-chat-danger-snip-scores-gcg2
+================================================================================
+
+Creating README.md with metadata...
+✓ README.md uploaded
+
+================================================================================
+✓ Upload complete!
+================================================================================

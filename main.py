@@ -19,6 +19,7 @@ from lib.prune import (
     get_mask,
     prune_wandg_set_difference,
     prune_wandg_two_stage,
+    prune_wandg_dq_then_pq,
     prune_attention_head,
 )
 from lib.model_wrapper import prune_wanda_v2, prune_wandg
@@ -143,6 +144,21 @@ def main():
         help="Enable two-stage pruning: first prune d=p with danger scores, then p,q as usual",
     )
     parser.add_argument(
+        "--dq_then_pq",
+        action="store_true",
+        help="Enable dq_then_pq pruning: Stage 1 prune d% danger (excluding q% utility), Stage 2 compute safety SNIP on Stage 1 model then prune p=0.07 q=0.03",
+    )
+    parser.add_argument(
+        "--least_dangerous",
+        action="store_true",
+        help="Use with --dq_then_pq: Prune LEAST dangerous (bottom d%) instead of MOST dangerous (top d%) neurons",
+    )
+    parser.add_argument(
+        "--use_existing_safety_scores",
+        action="store_true",
+        help="Use with --dq_then_pq: Use pre-existing safety SNIP scores instead of computing new ones on Stage 1 model",
+    )
+    parser.add_argument(
         "--top_k_heads",
         type=int,
         default=10,
@@ -263,6 +279,316 @@ def main():
     if args.save_model:
         model.save_pretrained(args.save_model)
         tokenizer.save_pretrained(args.save_model)
+
+    # Special handling for dq_then_pq two-stage pruning
+    if args.dq_then_pq:
+        if args.prune_method != "wandg_set_difference":
+            raise ValueError("--dq_then_pq requires --prune_method wandg_set_difference")
+        if args.d is None or args.q is None:
+            raise ValueError("--dq_then_pq requires --d and --q parameters")
+        
+        # Construct unique paths for this experiment
+        d_percent = int(args.d * 100)
+        q_percent = int(args.q * 100)
+        stage1_model_path = os.path.join(args.save, "stage1_model")
+        stage2_safety_scores_path = os.path.join(args.save, "stage2_safety_scores")
+        stage2_model_path = os.path.join(args.save, "stage2_model")
+        
+        # Ensure save directory exists
+        os.makedirs(args.save, exist_ok=True)
+        
+        # Perform two-stage pruning
+        print("=" * 80)
+        print("DQ then P007Q003 Two-Stage Pruning")
+        print(f"Stage 1: d={args.d*100:.1f}%, q={args.q*100:.1f}%")
+        print(f"Stage 2: p=7%, q=3%")
+        print("=" * 80)
+        print()
+        
+        prune_wandg_dq_then_pq(
+            args,
+            model,
+            tokenizer,
+            model_base=model_base,
+            device=device,
+            prune_n=prune_n,
+            prune_m=prune_m,
+            d=args.d,
+            q=args.q,
+            p_fixed=0.07,
+            q_fixed=0.03,
+            stage1_model_path=stage1_model_path,
+            stage2_safety_scores_path=stage2_safety_scores_path if not args.use_existing_safety_scores else None,
+            stage2_model_path=stage2_model_path,
+            least_dangerous=args.least_dangerous,
+            use_existing_safety_scores=args.use_existing_safety_scores,
+        )
+        
+        # Load Stage 1 model for evaluation
+        print("\n" + "=" * 80)
+        print("Evaluating Stage 1 Model")
+        print("=" * 80)
+        model_stage1 = AutoModelForCausalLM.from_pretrained(
+            stage1_model_path,
+            torch_dtype=torch.bfloat16,
+            low_cpu_mem_usage=True,
+            device_map="auto",
+        )
+        
+        # Evaluate Stage 1 with stage1_ prefix
+        stage_prefix = "stage1_"
+        log_filepath = os.path.join(args.save, "log_wandg_dq_then_pq.txt")
+        import gc
+        
+        # Stage 1 sparsity
+        sparsity_stage1 = check_sparsity(model_stage1)
+        print(f"Stage 1 sparsity: {sparsity_stage1:.6f}")
+        
+        # Stage 1 PPL
+        ppl_stage1 = eval_ppl(args, model_stage1, tokenizer, device)
+        print(f"Stage 1 wikitext perplexity: {ppl_stage1:.4f}")
+        
+        # Initialize log file
+        with open(log_filepath, "w") as f:
+            print(f"stage\td\tq\tp\tq_fixed\tactual_sparsity\tmetric\tscore", file=f, flush=True)
+            print(f"stage1\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage1:.6f}\tPPL\t{ppl_stage1:.4f}", file=f, flush=True)
+        
+        # Stage 1 zero-shot evaluation
+        if args.eval_zero_shot:
+            task_list = ["boolq", "rte", "hellaswag", "winogrande", "arc_challenge", "openbookqa"]
+            results_stage1 = eval_zero_shot(
+                modeltype2path[args.model],
+                model_stage1,
+                tokenizer,
+                task_list,
+                num_shot=0,
+                accelerate=False,
+                limit=200,
+            )
+            sum_acc_stage1 = sum(v["acc"] for v in results_stage1["results"].values())
+            avg_acc_stage1 = sum_acc_stage1 / len(task_list)
+            print(f"Stage 1 zero-shot accuracy (averaged): {avg_acc_stage1:.4f}")
+            with open(log_filepath, "a") as f:
+                for k, v in results_stage1["results"].items():
+                    print(f"stage1\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage1:.6f}\t{stage_prefix}{k}\t{v['acc']:.4f}", file=f, flush=True)
+                print(f"stage1\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage1:.6f}\t{stage_prefix}averaged\t{avg_acc_stage1:.4f}", file=f, flush=True)
+        
+        # Stage 1 attack evaluation
+        if args.eval_attack:
+            model_stage1.save_pretrained(os.path.join(SAVE_PATH, "dq_then_pq_stage1_temp"))
+            vllm_model_stage1 = LLM(
+                model=os.path.join(SAVE_PATH, "dq_then_pq_stage1_temp"),
+                tokenizer=modeltype2path[args.model],
+                dtype="bfloat16",
+                swap_space=16,
+            )
+            
+            # ASR evaluations for Stage 1
+            for include_inst in [True, False]:
+                suffix = "inst_" if include_inst else "no_inst_"
+                # ASR_basic
+                score_basic = eval_attack(
+                    vllm_model_stage1, tokenizer, num_sampled=1,
+                    add_sys_prompt=True, do_sample=False,
+                    save_attack_res=args.save_attack_res,
+                    include_inst=include_inst,
+                    filename=os.path.join(args.save, f"stage1_{suffix}basic.jsonl") if args.save_attack_res else "",
+                )
+                with open(log_filepath, "a") as f:
+                    print(f"stage1\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage1:.6f}\t{stage_prefix}{suffix}ASR_basic\t{score_basic:.4f}", file=f, flush=True)
+                
+                # ASR_basic_no_sys
+                score_basic_nosys = eval_attack(
+                    vllm_model_stage1, tokenizer, num_sampled=1,
+                    add_sys_prompt=False, do_sample=False,
+                    save_attack_res=args.save_attack_res,
+                    include_inst=include_inst,
+                    filename=os.path.join(args.save, f"stage1_{suffix}basic_no_sys.jsonl") if args.save_attack_res else "",
+                )
+                with open(log_filepath, "a") as f:
+                    print(f"stage1\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage1:.6f}\t{stage_prefix}{suffix}ASR_basic_nosys\t{score_basic_nosys:.4f}", file=f, flush=True)
+                
+                # ASR_multiple_nosys
+                if args.model == "llama2-7b-chat-hf" or "llama2-13b-chat-hf":
+                    score_multiple = eval_attack(
+                        vllm_model_stage1, tokenizer, num_sampled=5,
+                        add_sys_prompt=False, do_sample=True,
+                        save_attack_res=args.save_attack_res,
+                        include_inst=include_inst,
+                        filename=os.path.join(args.save, f"stage1_{suffix}multiple_no_sys.jsonl") if args.save_attack_res else "",
+                    )
+                    with open(log_filepath, "a") as f:
+                        print(f"stage1\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage1:.6f}\t{stage_prefix}{suffix}ASR_multiple_nosys\t{score_multiple:.4f}", file=f, flush=True)
+            
+            # ASR_gcg
+            result_gcg = eval_attack(
+                vllm_model_stage1, tokenizer, num_sampled=1,
+                add_sys_prompt=False, gcg=True, do_sample=False,
+                save_attack_res=args.save_attack_res,
+                include_inst=True,
+                filename=os.path.join(args.save, "stage1_gcg.jsonl") if args.save_attack_res else "",
+            )
+            if isinstance(result_gcg, tuple):
+                score_gcg, best_suffix_idx = result_gcg
+                with open(log_filepath, "a") as f:
+                    print(f"stage1\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage1:.6f}\t{stage_prefix}best_gcg_suffix\t{best_suffix_idx}", file=f, flush=True)
+            else:
+                score_gcg = result_gcg
+            with open(log_filepath, "a") as f:
+                print(f"stage1\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage1:.6f}\t{stage_prefix}ASR_gcg\t{score_gcg:.4f}", file=f, flush=True)
+            
+            # EM evaluation for Stage 1
+            if args.eval_emergent_misalignment:
+                em_results_stage1 = eval_emergent_misalignment(
+                    vllm_model_stage1, tokenizer,
+                    model_path=os.path.join(SAVE_PATH, "dq_then_pq_stage1_temp"),
+                    api_key=None,
+                )
+                with open(log_filepath, "a") as f:
+                    print(f"stage1\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage1:.6f}\t{stage_prefix}emergent_alignment\t{em_results_stage1['alignment_score']:.4f}", file=f, flush=True)
+                    print(f"stage1\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage1:.6f}\t{stage_prefix}emergent_coherence\t{em_results_stage1['coherence_score']:.4f}", file=f, flush=True)
+            
+            del vllm_model_stage1
+            gc.collect()
+            torch.cuda.empty_cache()
+        
+        # Clean up Stage 1 model from memory
+        del model_stage1
+        gc.collect()
+        torch.cuda.empty_cache()
+        
+        # Load Stage 2 model for evaluation
+        print("\n" + "=" * 80)
+        print("Evaluating Stage 2 Model")
+        print("=" * 80)
+        model_stage2 = AutoModelForCausalLM.from_pretrained(
+            stage2_model_path,
+            torch_dtype=torch.bfloat16,
+            low_cpu_mem_usage=True,
+            device_map="auto",
+        )
+        
+        # Evaluate Stage 2 with stage2_ prefix
+        stage_prefix = "stage2_"
+        
+        # Stage 2 sparsity
+        sparsity_stage2 = check_sparsity(model_stage2)
+        print(f"Stage 2 sparsity: {sparsity_stage2:.6f}")
+        
+        # Stage 2 PPL
+        ppl_stage2 = eval_ppl(args, model_stage2, tokenizer, device)
+        print(f"Stage 2 wikitext perplexity: {ppl_stage2:.4f}")
+        
+        with open(log_filepath, "a") as f:
+            print(f"stage2\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage2:.6f}\tPPL\t{ppl_stage2:.4f}", file=f, flush=True)
+        
+        # Stage 2 zero-shot evaluation
+        if args.eval_zero_shot:
+            task_list = ["boolq", "rte", "hellaswag", "winogrande", "arc_challenge", "openbookqa"]
+            results_stage2 = eval_zero_shot(
+                modeltype2path[args.model],
+                model_stage2,
+                tokenizer,
+                task_list,
+                num_shot=0,
+                accelerate=False,
+                limit=200,
+            )
+            sum_acc_stage2 = sum(v["acc"] for v in results_stage2["results"].values())
+            avg_acc_stage2 = sum_acc_stage2 / len(task_list)
+            print(f"Stage 2 zero-shot accuracy (averaged): {avg_acc_stage2:.4f}")
+            with open(log_filepath, "a") as f:
+                for k, v in results_stage2["results"].items():
+                    print(f"stage2\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage2:.6f}\t{stage_prefix}{k}\t{v['acc']:.4f}", file=f, flush=True)
+                print(f"stage2\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage2:.6f}\t{stage_prefix}averaged\t{avg_acc_stage2:.4f}", file=f, flush=True)
+        
+        # Stage 2 attack evaluation
+        if args.eval_attack:
+            model_stage2.save_pretrained(os.path.join(SAVE_PATH, "dq_then_pq_stage2_temp"))
+            vllm_model_stage2 = LLM(
+                model=os.path.join(SAVE_PATH, "dq_then_pq_stage2_temp"),
+                tokenizer=modeltype2path[args.model],
+                dtype="bfloat16",
+                swap_space=16,
+            )
+            
+            # ASR evaluations for Stage 2
+            for include_inst in [True, False]:
+                suffix = "inst_" if include_inst else "no_inst_"
+                # ASR_basic
+                score_basic = eval_attack(
+                    vllm_model_stage2, tokenizer, num_sampled=1,
+                    add_sys_prompt=True, do_sample=False,
+                    save_attack_res=args.save_attack_res,
+                    include_inst=include_inst,
+                    filename=os.path.join(args.save, f"stage2_{suffix}basic.jsonl") if args.save_attack_res else "",
+                )
+                with open(log_filepath, "a") as f:
+                    print(f"stage2\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage2:.6f}\t{stage_prefix}{suffix}ASR_basic\t{score_basic:.4f}", file=f, flush=True)
+                
+                # ASR_basic_no_sys
+                score_basic_nosys = eval_attack(
+                    vllm_model_stage2, tokenizer, num_sampled=1,
+                    add_sys_prompt=False, do_sample=False,
+                    save_attack_res=args.save_attack_res,
+                    include_inst=include_inst,
+                    filename=os.path.join(args.save, f"stage2_{suffix}basic_no_sys.jsonl") if args.save_attack_res else "",
+                )
+                with open(log_filepath, "a") as f:
+                    print(f"stage2\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage2:.6f}\t{stage_prefix}{suffix}ASR_basic_nosys\t{score_basic_nosys:.4f}", file=f, flush=True)
+                
+                # ASR_multiple_nosys
+                if args.model == "llama2-7b-chat-hf" or "llama2-13b-chat-hf":
+                    score_multiple = eval_attack(
+                        vllm_model_stage2, tokenizer, num_sampled=5,
+                        add_sys_prompt=False, do_sample=True,
+                        save_attack_res=args.save_attack_res,
+                        include_inst=include_inst,
+                        filename=os.path.join(args.save, f"stage2_{suffix}multiple_no_sys.jsonl") if args.save_attack_res else "",
+                    )
+                    with open(log_filepath, "a") as f:
+                        print(f"stage2\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage2:.6f}\t{stage_prefix}{suffix}ASR_multiple_nosys\t{score_multiple:.4f}", file=f, flush=True)
+            
+            # ASR_gcg
+            result_gcg = eval_attack(
+                vllm_model_stage2, tokenizer, num_sampled=1,
+                add_sys_prompt=False, gcg=True, do_sample=False,
+                save_attack_res=args.save_attack_res,
+                include_inst=True,
+                filename=os.path.join(args.save, "stage2_gcg.jsonl") if args.save_attack_res else "",
+            )
+            if isinstance(result_gcg, tuple):
+                score_gcg, best_suffix_idx = result_gcg
+                with open(log_filepath, "a") as f:
+                    print(f"stage2\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage2:.6f}\t{stage_prefix}best_gcg_suffix\t{best_suffix_idx}", file=f, flush=True)
+            else:
+                score_gcg = result_gcg
+            with open(log_filepath, "a") as f:
+                print(f"stage2\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage2:.6f}\t{stage_prefix}ASR_gcg\t{score_gcg:.4f}", file=f, flush=True)
+            
+            # EM evaluation for Stage 2
+            if args.eval_emergent_misalignment:
+                em_results_stage2 = eval_emergent_misalignment(
+                    vllm_model_stage2, tokenizer,
+                    model_path=os.path.join(SAVE_PATH, "dq_then_pq_stage2_temp"),
+                    api_key=None,
+                )
+                with open(log_filepath, "a") as f:
+                    print(f"stage2\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage2:.6f}\t{stage_prefix}emergent_alignment\t{em_results_stage2['alignment_score']:.4f}", file=f, flush=True)
+                    print(f"stage2\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage2:.6f}\t{stage_prefix}emergent_coherence\t{em_results_stage2['coherence_score']:.4f}", file=f, flush=True)
+            
+            del vllm_model_stage2
+            gc.collect()
+            torch.cuda.empty_cache()
+        
+        # Update model to Stage 2 model for compatibility
+        model = model_stage2
+        
+        print("\n" + "=" * 80)
+        print("DQ then P007Q003 experiment complete!")
+        print("=" * 80)
+        print(f"Results logged to: {log_filepath}")
+        return  # Exit early, skip regular evaluation
 
     if args.sparsity_ratio != 0:
         print("pruning starts")
@@ -715,3 +1041,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

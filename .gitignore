@@ -17,3 +17,5 @@ __pycache__
 *.pickle
 *.pkl.gz
 *.pickle.gz
+*.safetensors
+*.model

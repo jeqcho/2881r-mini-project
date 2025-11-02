@@ -2299,3 +2299,311 @@ def prune_wandg_two_stage(
     print("=" * 60)
     print("Two-stage pruning complete!")
     print("=" * 60)
+
+
+def prune_wandg_dq_then_pq(
+    args,
+    model,
+    tokenizer,
+    model_base=None,
+    device=torch.device("cuda:0"),
+    prune_n=0,
+    prune_m=0,
+    d=0.01,  # Stage 1: top d% danger neurons
+    q=0.01,  # Stage 1: exclude top q% utility neurons
+    p_fixed=0.07,  # Stage 2: top p% utility
+    q_fixed=0.03,  # Stage 2: top q% safety
+    stage1_model_path=None,  # Where to save Stage 1 pruned model
+    stage2_safety_scores_path=None,  # Where to save Stage 2 safety SNIP scores (if None, use pre-existing)
+    stage2_model_path=None,  # Where to save final Stage 2 model
+    least_dangerous=False,  # If True, prune LEAST dangerous (bottom d%) instead of MOST dangerous (top d%)
+    use_existing_safety_scores=False,  # If True, use pre-existing safety scores instead of computing new ones
+):
+    """
+    Two-stage pruning with safe storage paths:
+    Stage 1: Prune top d% danger neurons that are NOT in top q% utility neurons
+    Stage 2: Compute safety SNIP scores on Stage 1 model, then prune p=0.07, q=0.03
+    
+    CRITICAL: Uses explicit paths to prevent overwriting base SNIP scores or models.
+    """
+    import os
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+    from lib.model_wrapper import prune_wandg, make_Act, revert_Act_to_Linear
+    
+    use_cache = model.config.use_cache
+    model.config.use_cache = False
+    layers = model.model.layers
+    
+    metric_danger = "danger_gcg2"  # Danger scores (read-only)
+    metric_utility = "alpaca_cleaned_no_safety"  # Utility scores (read-only)
+    metric_safety = "align"  # Safety dataset name for SNIP computation
+    
+    print("=" * 80)
+    print("DQ then P007Q003 Two-Stage Pruning")
+    print("=" * 80)
+    if least_dangerous:
+        print(f"Stage 1: Prune BOTTOM d={d*100:.1f}% (LEAST dangerous) neurons NOT in top q={q*100:.1f}% utility")
+    else:
+        print(f"Stage 1: Prune top d={d*100:.1f}% danger neurons NOT in top q={q*100:.1f}% utility")
+    if use_existing_safety_scores:
+        print(f"Stage 2: Use PRE-EXISTING safety SNIP scores, then prune p={p_fixed*100:.1f}%, q={q_fixed*100:.1f}%")
+    else:
+        print(f"Stage 2: Compute safety SNIP on Stage 1 model, then prune p={p_fixed*100:.1f}%, q={q_fixed*100:.1f}%")
+    print()
+    print("Storage paths:")
+    print(f"  Stage 1 model: {stage1_model_path}")
+    if use_existing_safety_scores:
+        print(f"  Stage 2 safety scores: Using pre-existing align scores (read-only)")
+    else:
+        print(f"  Stage 2 safety scores: {stage2_safety_scores_path}")
+    print(f"  Stage 2 model: {stage2_model_path}")
+    print("=" * 80)
+    print()
+    
+    if args.prune_part:
+        print("only prune the layer with low jaccard index")
+    else:
+        print("prune every linear layer")
+    
+    # ============================================================
+    # STAGE 1: Prune top d% danger that are NOT in top q% utility
+    # ============================================================
+    print(f"\n[STAGE 1] Pruning d={d*100:.1f}% danger neurons NOT in q={q*100:.1f}% utility...")
+    
+    for i in range(len(layers)):
+        layer = layers[i]
+        subset = find_layers(layer)
+        
+        if not args.prune_part:
+            for name in subset:
+                print(f"  Stage 1 - pruning layer {i} name {name}")
+                
+                if args.model == "llama2-7b-chat-hf":
+                    # Load danger scores (d) - READ-ONLY from danger_gcg2
+                    danger_score_path = f"out/llama2-7b-chat-hf/unstructured/wandg/{metric_danger}/wanda_score/W_metric_layer_{i}_name_model.layers.{i}.{name}_weight.pkl"
+                    if not os.path.exists(danger_score_path):
+                        raise FileNotFoundError(
+                            f"Danger scores not found at {danger_score_path}. "
+                            "Please ensure danger_gcg2 SNIP scores are computed."
+                        )
+                    W_metric_d = pickle.load(open(danger_score_path, "rb"))
+                    
+                    # Load utility scores (q) - READ-ONLY from alpaca_cleaned_no_safety
+                    utility_score_path = f"out/llama2-7b-chat-hf/unstructured/wandg/{metric_utility}/wanda_score/W_metric_layer_{i}_name_model.layers.{i}.{name}_weight.pkl"
+                    if not os.path.exists(utility_score_path):
+                        raise FileNotFoundError(
+                            f"Utility scores not found at {utility_score_path}. "
+                            "Please run experiments/dump_scores.sh first."
+                        )
+                    W_metric_u = pickle.load(open(utility_score_path, "rb"))
+                else:
+                    raise NotImplementedError(f"Model {args.model} not supported")
+                
+                # Calculate top d% or bottom d% danger indices
+                top_d = int(d * W_metric_d.shape[1] * W_metric_d.shape[0])
+                if least_dangerous:
+                    # Get BOTTOM d% (least dangerous)
+                    top_d_indices = torch.topk(W_metric_d.flatten(), top_d, largest=False)[1]
+                else:
+                    # Get TOP d% (most dangerous)
+                    top_d_indices = torch.topk(W_metric_d.flatten(), top_d, largest=True)[1]
+                unique_d = torch.unique(top_d_indices)
+                
+                # Calculate top q% utility indices
+                top_q = int(q * W_metric_u.shape[1] * W_metric_u.shape[0])
+                top_q_indices = torch.topk(W_metric_u.flatten(), top_q, largest=True)[1]
+                unique_q = torch.unique(top_q_indices)
+                
+                # Set difference: top_d - (top_d ∩ top_q)
+                # Prune danger neurons that are NOT in utility
+                mask = ~torch.isin(unique_d, unique_q)
+                filtered_indices = unique_d[mask]
+                
+                # Create pruning mask
+                weight_dim = subset[name].weight.data.shape[1]
+                filtered_indices_rows = filtered_indices // weight_dim
+                filtered_indices_cols = filtered_indices % weight_dim
+                
+                W_mask_stage1 = torch.zeros_like(subset[name].weight.data) == 1
+                W_mask_stage1[filtered_indices_rows, filtered_indices_cols] = True
+                
+                # Apply Stage 1 pruning
+                subset[name].weight.data[W_mask_stage1] = 0
+    
+    print(f"✓ Stage 1 complete: Pruned {d*100:.1f}% danger neurons (excluding {q*100:.1f}% utility)")
+    
+    # Save Stage 1 model
+    if stage1_model_path:
+        print(f"\nSaving Stage 1 model to {stage1_model_path}...")
+        os.makedirs(stage1_model_path, exist_ok=True)
+        model.save_pretrained(stage1_model_path)
+        tokenizer.save_pretrained(stage1_model_path)
+        print(f"✓ Stage 1 model saved")
+    else:
+        raise ValueError("stage1_model_path must be provided")
+    
+    print()
+    
+    # ============================================================
+    # STAGE 2: Compute safety SNIP scores on Stage 1 model
+    # ============================================================
+    print(f"[STAGE 2] Computing safety SNIP scores on Stage 1 model...")
+    print(f"Dataset: {metric_safety}")
+    print(f"Save path: {stage2_safety_scores_path}")
+    print()
+    
+    # Load Stage 1 model for SNIP computation
+    print(f"Loading Stage 1 model from {stage1_model_path}...")
+    model_stage1 = AutoModelForCausalLM.from_pretrained(
+        stage1_model_path,
+        torch_dtype=torch.bfloat16,
+        low_cpu_mem_usage=True,
+        device_map="auto",
+    )
+    
+    # Wrap with ActLinear for gradient computation
+    model_stage1 = make_Act(model_stage1, verbose=False)
+    model_stage1.train()
+    model_stage1.seqlen = model_stage1.config.max_position_embeddings
+    
+    # Create args for SNIP score computation
+    class SnipArgs:
+        def __init__(self):
+            self.model = args.model
+            self.sparsity_ratio = args.sparsity_ratio
+            self.sparsity_type = args.sparsity_type
+            self.prune_method = "wandg"
+            self.prune_data = metric_safety
+            self.nsamples = args.nsamples
+            self.seed = args.seed
+            self.use_diff = False
+            self.recover_from_base = False
+            self.prune_part = False
+            self.dump_wanda_score = True  # Just dump scores
+            self.neg_prune = False
+            self.use_variant = False
+            self.disentangle = True
+            self.save = stage2_safety_scores_path  # CRITICAL: Use unique path
+            self.gcg_suffix_id = None
+    
+    snip_args = SnipArgs()
+    
+    # Compute and save SNIP scores
+    print("Computing safety SNIP scores...")
+    prune_wandg(
+        snip_args,
+        model_stage1,
+        tokenizer,
+        model_base=None,
+        device=device,
+        prune_n=0,
+        prune_m=0,
+        prune_data=metric_safety,
+    )
+    
+    # Clean up
+    del model_stage1
+    import gc
+    gc.collect()
+    torch.cuda.empty_cache()
+    
+    print(f"✓ Safety SNIP scores saved to {stage2_safety_scores_path}")
+    print()
+    
+    # ============================================================
+    # STAGE 2: Prune p=0.07, q=0.03 using set difference
+    # ============================================================
+    print(f"[STAGE 2] Pruning p={p_fixed*100:.1f}%, q={q_fixed*100:.1f}% on Stage 1 model...")
+    
+    # Reload Stage 1 model for Stage 2 pruning
+    print(f"Reloading Stage 1 model from {stage1_model_path}...")
+    model_stage2 = AutoModelForCausalLM.from_pretrained(
+        stage1_model_path,
+        torch_dtype=torch.bfloat16,
+        low_cpu_mem_usage=True,
+        device_map="auto",
+    )
+    model_stage2.config.use_cache = False
+    layers_stage2 = model_stage2.model.layers
+    
+    for i in range(len(layers_stage2)):
+        layer = layers_stage2[i]
+        subset = find_layers(layer)
+        
+        if not args.prune_part:
+            for name in subset:
+                print(f"  Stage 2 - pruning layer {i} name {name}")
+                
+                if args.model == "llama2-7b-chat-hf":
+                    # Load utility scores (p) - READ-ONLY
+                    utility_score_path = f"out/llama2-7b-chat-hf/unstructured/wandg/{metric_utility}/wanda_score/W_metric_layer_{i}_name_model.layers.{i}.{name}_weight.pkl"
+                    W_metric_p = pickle.load(open(utility_score_path, "rb"))
+                    
+                    # Load safety scores (q) - either from pre-existing or Stage 2 computed scores
+                    if use_existing_safety_scores:
+                        # Use pre-existing base align scores
+                        safety_score_path = f"out/llama2-7b-chat-hf/unstructured/wandg/align/wanda_score/W_metric_layer_{i}_name_model.layers.{i}.{name}_weight.pkl"
+                        if not os.path.exists(safety_score_path):
+                            raise FileNotFoundError(
+                                f"Pre-existing safety scores not found at {safety_score_path}. "
+                                "Please ensure base align SNIP scores are computed."
+                            )
+                        print(f"  Using pre-existing safety scores from: {safety_score_path}")
+                    else:
+                        # Use Stage 2 computed scores
+                        safety_score_path = os.path.join(stage2_safety_scores_path, "wanda_score", f"W_metric_layer_{i}_name_model.layers.{i}.{name}_weight.pkl")
+                        if not os.path.exists(safety_score_path):
+                            raise FileNotFoundError(
+                                f"Stage 2 safety scores not found at {safety_score_path}. "
+                                "Please ensure Stage 2 SNIP computation completed."
+                            )
+                    W_metric_q = pickle.load(open(safety_score_path, "rb"))
+                else:
+                    raise NotImplementedError
+                
+                # Calculate top p% utility and top q% safety
+                top_p = int(p_fixed * W_metric_p.shape[1] * W_metric_p.shape[0])
+                top_q = int(q_fixed * W_metric_q.shape[1] * W_metric_q.shape[0])
+                
+                top_p_indices = torch.topk(W_metric_p.flatten(), top_p, largest=True)[1]
+                top_q_indices = torch.topk(W_metric_q.flatten(), top_q, largest=True)[1]
+                unique_p = torch.unique(top_p_indices)
+                unique_q = torch.unique(top_q_indices)
+                
+                # Set difference: elements in unique_q (safety) that are not in unique_p (utility)
+                mask = ~torch.isin(unique_q, unique_p)
+                filtered_indices = unique_q[mask]
+                
+                weight_dim = subset[name].weight.data.shape[1]
+                filtered_indices_rows = filtered_indices // weight_dim
+                filtered_indices_cols = filtered_indices % weight_dim
+                
+                W_mask_stage2 = torch.zeros_like(subset[name].weight.data) == 1
+                W_mask_stage2[filtered_indices_rows, filtered_indices_cols] = True
+                
+                # Apply Stage 2 pruning
+                subset[name].weight.data[W_mask_stage2] = 0
+    
+    print(f"✓ Stage 2 complete: Pruned p={p_fixed*100:.1f}%, q={q_fixed*100:.1f}%")
+    
+    # Save final Stage 2 model
+    if stage2_model_path:
+        print(f"\nSaving Stage 2 model to {stage2_model_path}...")
+        os.makedirs(stage2_model_path, exist_ok=True)
+        model_stage2.save_pretrained(stage2_model_path)
+        tokenizer.save_pretrained(stage2_model_path)
+        print(f"✓ Stage 2 model saved")
+    else:
+        raise ValueError("stage2_model_path must be provided")
+    
+    # Clean up
+    del model_stage2
+    gc.collect()
+    torch.cuda.empty_cache()
+    
+    model.config.use_cache = use_cache
+    
+    print()
+    print("=" * 80)
+    print("Two-stage pruning complete!")
+    print("=" * 80)
