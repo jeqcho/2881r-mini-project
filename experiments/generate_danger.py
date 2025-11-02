@@ -102,49 +102,51 @@ def main():
     print("✓ Model loaded")
     print()
     
-    # For generating danger.txt, we'll use GCG string index 0
-    # The GCG evaluation in the experiments tests all three and picks the best,
-    # but for consistency we'll use one. Can be changed if needed.
-    # Actually, let's use all three and generate completions with each,
-    # then pick the best response for each prompt (highest ASR)
-    print("Generating completions for all prompts using all GCG strings...")
-    print("Will select best response per prompt based on ASR.")
+    # Use GCG suffix 2 only for consistency with SNIP score computation
+    GCG_SUFFIX_ID = 2
+    NUM_EXAMPLES_TO_LOG = 5  # Number of examples to show early
+    
+    print(f"Generating completions using GCG suffix {GCG_SUFFIX_ID} only...")
+    print("(This matches the GCG suffix used for SNIP score computation)")
     print()
     
-    all_completions = []  # List of lists: [completions_gcg0, completions_gcg1, completions_gcg2]
+    # Strip [INST] tags from prompts if they already have them
+    # (apply_prompt_template will add them back with GCG suffix)
+    import re
+    clean_prompts = []
+    for prompt in prompts:
+        cleaned = re.sub(r'^\[INST\]\s*', '', prompt)
+        cleaned = re.sub(r'\s*\[/INST\]\s*$', '', cleaned)
+        clean_prompts.append(cleaned)
     
-    for gcg_idx in range(3):
-        print(f"Generating with GCG string {gcg_idx}...")
-        dialogs = apply_prompt_template(
-            prompt_template_style="none",
-            dataset=prompts,
-            include_inst=True,
-            gcg_suffix_id=gcg_idx,
-        )
-        
-        sampling_params = SamplingParams(temperature=0, n=1, max_tokens=256)
-        outputs = vllm_model.generate(dialogs, sampling_params)
-        
-        completions = []
-        for output in outputs:
-            generated_text = output.outputs[0].text if output.outputs else ""
-            completions.append(generated_text)
-        
-        all_completions.append(completions)
-        print(f"  ✓ Generated {len(completions)} completions")
+    dialogs = apply_prompt_template(
+        prompt_template_style="none",
+        dataset=clean_prompts,
+        include_inst=True,
+        gcg_suffix_id=GCG_SUFFIX_ID,
+    )
     
-    print()
-    print("Selecting best completion per prompt based on ASR...")
-    from lib.eval import not_matched
+    sampling_params = SamplingParams(temperature=0, n=1, max_tokens=256)
+    outputs = vllm_model.generate(dialogs, sampling_params)
     
     final_completions = []
-    for i in range(len(prompts)):
-        # For each prompt, pick the completion with highest ASR (not_matched returns 1 for success)
-        scores = [not_matched(all_completions[gcg_idx][i]) for gcg_idx in range(3)]
-        best_idx = scores.index(max(scores))
-        final_completions.append(all_completions[best_idx][i])
+    logged_count = 0
+    for i, output in enumerate(outputs):
+        generated_text = output.outputs[0].text if output.outputs else ""
+        final_completions.append(generated_text)
+        
+        # Log first few examples
+        if logged_count < NUM_EXAMPLES_TO_LOG:
+            print(f"\n  Example {logged_count + 1} (GCG {GCG_SUFFIX_ID}):")
+            print(f"    Prompt: {clean_prompts[i][:150]}..." if len(clean_prompts[i]) > 150 else f"    Prompt: {clean_prompts[i]}")
+            print(f"    Completion: {generated_text[:300]}..." if len(generated_text) > 300 else f"    Completion: {generated_text}")
+            logged_count += 1
+        
+        # Progress indicator
+        if (i + 1) % 1000 == 0:
+            print(f"  Processed {i + 1}/{len(clean_prompts)} prompts...")
     
-    print(f"✓ Selected {len(final_completions)} best completions")
+    print(f"\n✓ Generated {len(final_completions)} completions using GCG suffix {GCG_SUFFIX_ID}")
     print()
     
     # Clean up model
@@ -155,14 +157,14 @@ def main():
     
     # Save to danger.txt
     # Format: one line per prompt+completion pair
-    # We'll save as tab-separated: prompt\tcompletion
+    # IMPORTANT: Save dialogs (with GCG suffix) not original prompts, to match SNIP computation
     print(f"Saving to {OUTPUT_PATH}...")
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
     
     with open(OUTPUT_PATH, 'w') as f:
-        for prompt, completion in zip(prompts, final_completions):
-            # Save as prompt\tcompletion format (simple tab-separated)
-            f.write(f"{prompt}\t{completion}\n")
+        for dialog, completion in zip(dialogs, final_completions):
+            # Save as dialog\tcompletion format (dialog includes GCG suffix)
+            f.write(f"{dialog}\t{completion}\n")
     
     print(f"✓ Saved {len(final_completions)} prompt-completion pairs to {OUTPUT_PATH}")
     print()
