@@ -17,3 +17,4 @@ __pycache__
 *.pickle
 *.pkl.gz
 *.pickle.gz
+.venv

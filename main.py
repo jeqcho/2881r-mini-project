@@ -438,10 +438,20 @@ def main():
             f"{args.prune_method}_usediff_{args.use_diff}_recover_{args.recover_from_base}",
         )
         model.save_pretrained(pruned_path)
+        
+        # Free GPU memory before loading vLLM
+        print("Freeing GPU memory before loading vLLM...")
+        del model
+        import gc
+        gc.collect()
+        torch.cuda.empty_cache()
+        print("GPU memory cleared")
+        
         vllm_model = LLM(
             model=pruned_path,
             tokenizer=modeltype2path[args.model],
             dtype="bfloat16",
+            gpu_memory_utilization=0.8,  # Use 80% of available GPU memory
             swap_space=16,  # Reduced from 128 to 16 GiB to prevent OOM
         )
         if args.decouple_align_utility or args.decouple_align_misalign:

@@ -1,0 +1,11 @@
+#!/bin/bash
+echo "=== Baseline Evaluation Status ==="
+echo ""
+echo "Tmux session:"
+tmux ls 2>&1 | grep baseline || echo "  No baseline_eval session found"
+echo ""
+echo "=== Latest log output (last 40 lines) ==="
+tail -n 40 /workspace/2881r-mini-project/out/experiments/baseline/baseline_eval.log 2>/dev/null || echo "Log file not found"
+echo ""
+echo "=== Output directory ==="
+ls -lah /workspace/2881r-mini-project/out/experiments/baseline/normal_model/ 2>/dev/null || echo "Output directory not yet created"
