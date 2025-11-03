@@ -18,7 +18,7 @@ SPARSITY_RATIO=0.5
 PRUNE_DATA="align"
 
 # Navigate to project root
-cd /workspace/projects/2881r-mini-project
+cd /workspace/2881r-mini-project
 
 # Activate virtual environment
 echo "Activating virtual environment..."

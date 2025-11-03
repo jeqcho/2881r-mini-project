@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
 
-def create_plot(df, x_col, y_col, title, ylabel, output_file):
+def create_plot(df, x_col, y_col, title, ylabel, output_file, original_x, original_y):
     """
     Create a scatter plot with triangle markers.
 
@@ -21,6 +21,8 @@ def create_plot(df, x_col, y_col, title, ylabel, output_file):
         title: Plot title
         ylabel: Y-axis label
         output_file: Output PNG file path
+        original_x: Original model x-value (zero-shot accuracy)
+        original_y: Original model y-value (ASR metric)
     """
     # Wider and shorter figure (more rectangular)
     plt.figure(figsize=(10, 4))
@@ -29,25 +31,29 @@ def create_plot(df, x_col, y_col, title, ylabel, output_file):
     color = '#19C584'
 
     # Create scatter plot with triangle markers, no lines
-    plt.scatter(df[x_col], df[y_col], marker='^',
-                s=150, color=color, edgecolors='none')
+    pruned = plt.scatter(df[x_col], df[y_col], marker='^',
+                s=150, color=color, edgecolors='none', label='SNIP (set difference)')
 
-    # Set axis limits with extra space at ends
-    # Adjust based on actual data range
-    x_min, x_max = df[x_col].min(), df[x_col].max()
-    x_padding = (x_max - x_min) * 0.1
-    plt.xlim(x_min - x_padding, x_max + x_padding)
-    plt.ylim(0, 1.0)
+    # Add original model as purple diamond
+    original = plt.scatter(original_x, original_y, marker='D',
+                s=150, color='#8B45C6', edgecolors='none', label='Original')  # Vibrant purple diamond
 
-    # Set x-axis ticks
-    x_ticks = np.arange(np.floor((x_min - x_padding) * 20) / 20, 
-                       np.ceil((x_max + x_padding) * 20) / 20 + 0.01, 0.05)
+    # Set axis limits with fixed x-axis range and padding on y-axis
+    plt.xlim(0.35, 0.65)
+    plt.ylim(-0.05, 1.05)
+
+    # Set x-axis ticks (0.35 to 0.65 with 0.05 spacing)
+    x_ticks = np.arange(0.35, 0.66, 0.05)
     plt.xticks(x_ticks, fontsize=16)
     plt.yticks(fontsize=16)
 
     # Labels - larger font, no bold, no title
     plt.xlabel('Zero-shot Accuracy', fontsize=18)
     plt.ylabel(ylabel, fontsize=18)
+
+    # Add legend above the plot
+    plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.25), 
+               fontsize=14, framealpha=0.9, ncol=2)
 
     # Grid
     plt.grid(True, alpha=0.3, linestyle='--')
@@ -188,6 +194,12 @@ def main():
     print("Generating plots...")
     print()
 
+    # Original model values
+    original_zeroshot = 0.5842
+    original_vanilla_asr = 0.0000  # inst_ASR_basic
+    original_adv_suffix_asr = 0.1000  # ASR_gcg
+    original_adv_decoding_asr = 0.2640  # no_inst_ASR_multiple_nosys
+
     # Plot 1: Vanilla ASR
     create_plot(
         df=df,
@@ -195,7 +207,9 @@ def main():
         y_col='inst_ASR_basic',
         title='Zero-shot Accuracy vs ASR_Vanilla',
         ylabel='$\\mathrm{ASR_{Vanilla}}$',
-        output_file=output_dir / 'plot_vanilla_asr.png'
+        output_file=output_dir / 'plot_vanilla_asr.png',
+        original_x=original_zeroshot,
+        original_y=original_vanilla_asr
     )
 
     # Plot 2: Adv-Suffix ASR (GCG)
@@ -205,7 +219,9 @@ def main():
         y_col='ASR_gcg',
         title='Zero-shot Accuracy vs ASR_Adv-Suffix',
         ylabel='$\\mathrm{ASR_{Adv\\text{-}Suffix}}$',
-        output_file=output_dir / 'plot_adv_suffix_asr.png'
+        output_file=output_dir / 'plot_adv_suffix_asr.png',
+        original_x=original_zeroshot,
+        original_y=original_adv_suffix_asr
     )
 
     # Plot 3: Adv-Decoding ASR (multiple sampling)
@@ -215,7 +231,9 @@ def main():
         y_col='inst_ASR_multiple_nosys',
         title='Zero-shot Accuracy vs ASR_Adv-Decoding',
         ylabel='$\\mathrm{ASR_{Adv\\text{-}Decoding}}$',
-        output_file=output_dir / 'plot_adv_decoding_asr.png'
+        output_file=output_dir / 'plot_adv_decoding_asr.png',
+        original_x=original_zeroshot,
+        original_y=original_adv_decoding_asr
     )
 
     # Plot 4: EM Alignment vs Coherence (colored by ASR Vanilla)

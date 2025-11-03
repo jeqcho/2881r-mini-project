@@ -377,11 +377,17 @@ def main():
         # Stage 1 attack evaluation
         if args.eval_attack:
             model_stage1.save_pretrained(os.path.join(SAVE_PATH, "dq_then_pq_stage1_temp"))
+            # Free GPU memory before loading vLLM
+            del model_stage1
+            torch.cuda.empty_cache()
+            import gc
+            gc.collect()
             vllm_model_stage1 = LLM(
                 model=os.path.join(SAVE_PATH, "dq_then_pq_stage1_temp"),
                 tokenizer=modeltype2path[args.model],
                 dtype="bfloat16",
                 swap_space=16,
+                gpu_memory_utilization=0.85,  # Reduce from default 0.9 to 0.85
             )
             
             # ASR evaluations for Stage 1
@@ -460,10 +466,11 @@ def main():
             except (ImportError, AttributeError, Exception):
                 pass  # If not available or fails, continue anyway
         
-        # Clean up Stage 1 model from memory
-        del model_stage1
-        gc.collect()
-        torch.cuda.empty_cache()
+        # Clean up Stage 1 model from memory (if not already deleted for eval_attack)
+        if not args.eval_attack:
+            del model_stage1
+            gc.collect()
+            torch.cuda.empty_cache()
         
         # Small delay to ensure cleanup completes
         import time
@@ -518,11 +525,16 @@ def main():
         # Stage 2 attack evaluation
         if args.eval_attack:
             model_stage2.save_pretrained(os.path.join(SAVE_PATH, "dq_then_pq_stage2_temp"))
+            # Free GPU memory before loading vLLM
+            del model_stage2
+            torch.cuda.empty_cache()
+            gc.collect()
             vllm_model_stage2 = LLM(
                 model=os.path.join(SAVE_PATH, "dq_then_pq_stage2_temp"),
                 tokenizer=modeltype2path[args.model],
                 dtype="bfloat16",
                 swap_space=16,
+                gpu_memory_utilization=0.85,  # Reduce from default 0.9 to 0.85
             )
             
             # ASR evaluations for Stage 2
