@@ -2367,81 +2367,87 @@ def prune_wandg_dq_then_pq(
         print("prune every linear layer")
     
     # ============================================================
-    # STAGE 1: Prune top d% danger that are NOT in top q% utility
+    # STAGE 1: Prune top d% danger that are NOT in top q% utility (or load if exists)
     # ============================================================
-    print(f"\n[STAGE 1] Pruning d={d*100:.1f}% danger neurons NOT in q={q*100:.1f}% utility...")
-    
-    for i in range(len(layers)):
-        layer = layers[i]
-        subset = find_layers(layer)
-        
-        if not args.prune_part:
-            for name in subset:
-                print(f"  Stage 1 - pruning layer {i} name {name}")
-                
-                if args.model == "llama2-7b-chat-hf":
-                    # Load danger scores (d) - READ-ONLY from danger_gcg2
-                    danger_score_path = f"out/llama2-7b-chat-hf/unstructured/wandg/{metric_danger}/wanda_score/W_metric_layer_{i}_name_model.layers.{i}.{name}_weight.pkl"
-                    if not os.path.exists(danger_score_path):
-                        raise FileNotFoundError(
-                            f"Danger scores not found at {danger_score_path}. "
-                            "Please ensure danger_gcg2 SNIP scores are computed."
-                        )
-                    W_metric_d = pickle.load(open(danger_score_path, "rb"))
-                    
-                    # Load utility scores (q) - READ-ONLY from alpaca_cleaned_no_safety
-                    utility_score_path = f"out/llama2-7b-chat-hf/unstructured/wandg/{metric_utility}/wanda_score/W_metric_layer_{i}_name_model.layers.{i}.{name}_weight.pkl"
-                    if not os.path.exists(utility_score_path):
-                        raise FileNotFoundError(
-                            f"Utility scores not found at {utility_score_path}. "
-                            "Please run experiments/dump_scores.sh first."
-                        )
-                    W_metric_u = pickle.load(open(utility_score_path, "rb"))
-                else:
-                    raise NotImplementedError(f"Model {args.model} not supported")
-                
-                # Calculate top d% or bottom d% danger indices
-                top_d = int(d * W_metric_d.shape[1] * W_metric_d.shape[0])
-                if least_dangerous:
-                    # Get BOTTOM d% (least dangerous)
-                    top_d_indices = torch.topk(W_metric_d.flatten(), top_d, largest=False)[1]
-                else:
-                    # Get TOP d% (most dangerous)
-                    top_d_indices = torch.topk(W_metric_d.flatten(), top_d, largest=True)[1]
-                unique_d = torch.unique(top_d_indices)
-                
-                # Calculate top q% utility indices
-                top_q = int(q * W_metric_u.shape[1] * W_metric_u.shape[0])
-                top_q_indices = torch.topk(W_metric_u.flatten(), top_q, largest=True)[1]
-                unique_q = torch.unique(top_q_indices)
-                
-                # Set difference: top_d - (top_d ∩ top_q)
-                # Prune danger neurons that are NOT in utility
-                mask = ~torch.isin(unique_d, unique_q)
-                filtered_indices = unique_d[mask]
-                
-                # Create pruning mask
-                weight_dim = subset[name].weight.data.shape[1]
-                filtered_indices_rows = filtered_indices // weight_dim
-                filtered_indices_cols = filtered_indices % weight_dim
-                
-                W_mask_stage1 = torch.zeros_like(subset[name].weight.data) == 1
-                W_mask_stage1[filtered_indices_rows, filtered_indices_cols] = True
-                
-                # Apply Stage 1 pruning
-                subset[name].weight.data[W_mask_stage1] = 0
-    
-    print(f"✓ Stage 1 complete: Pruned {d*100:.1f}% danger neurons (excluding {q*100:.1f}% utility)")
-    
-    # Save Stage 1 model
-    if stage1_model_path:
-        print(f"\nSaving Stage 1 model to {stage1_model_path}...")
-        os.makedirs(stage1_model_path, exist_ok=True)
-        model.save_pretrained(stage1_model_path)
-        tokenizer.save_pretrained(stage1_model_path)
-        print(f"✓ Stage 1 model saved")
+    # Check if Stage 1 model already exists
+    if stage1_model_path and os.path.exists(stage1_model_path) and os.path.exists(os.path.join(stage1_model_path, "config.json")):
+        print(f"\n[STAGE 1] Stage 1 model already exists at {stage1_model_path}")
+        print("  Skipping Stage 1 pruning - will load saved model for Stage 2")
+        print()
     else:
-        raise ValueError("stage1_model_path must be provided")
+        print(f"\n[STAGE 1] Pruning d={d*100:.1f}% danger neurons NOT in q={q*100:.1f}% utility...")
+        
+        for i in range(len(layers)):
+            layer = layers[i]
+            subset = find_layers(layer)
+            
+            if not args.prune_part:
+                for name in subset:
+                    print(f"  Stage 1 - pruning layer {i} name {name}")
+                    
+                    if args.model == "llama2-7b-chat-hf":
+                        # Load danger scores (d) - READ-ONLY from danger_gcg2
+                        danger_score_path = f"out/llama2-7b-chat-hf/unstructured/wandg/{metric_danger}/wanda_score/W_metric_layer_{i}_name_model.layers.{i}.{name}_weight.pkl"
+                        if not os.path.exists(danger_score_path):
+                            raise FileNotFoundError(
+                                f"Danger scores not found at {danger_score_path}. "
+                                "Please ensure danger_gcg2 SNIP scores are computed."
+                            )
+                        W_metric_d = pickle.load(open(danger_score_path, "rb"))
+                        
+                        # Load utility scores (q) - READ-ONLY from alpaca_cleaned_no_safety
+                        utility_score_path = f"out/llama2-7b-chat-hf/unstructured/wandg/{metric_utility}/wanda_score/W_metric_layer_{i}_name_model.layers.{i}.{name}_weight.pkl"
+                        if not os.path.exists(utility_score_path):
+                            raise FileNotFoundError(
+                                f"Utility scores not found at {utility_score_path}. "
+                                "Please run experiments/dump_scores.sh first."
+                            )
+                        W_metric_u = pickle.load(open(utility_score_path, "rb"))
+                    else:
+                        raise NotImplementedError(f"Model {args.model} not supported")
+                    
+                    # Calculate top d% or bottom d% danger indices
+                    top_d = int(d * W_metric_d.shape[1] * W_metric_d.shape[0])
+                    if least_dangerous:
+                        # Get BOTTOM d% (least dangerous)
+                        top_d_indices = torch.topk(W_metric_d.flatten(), top_d, largest=False)[1]
+                    else:
+                        # Get TOP d% (most dangerous)
+                        top_d_indices = torch.topk(W_metric_d.flatten(), top_d, largest=True)[1]
+                    unique_d = torch.unique(top_d_indices)
+                    
+                    # Calculate top q% utility indices
+                    top_q = int(q * W_metric_u.shape[1] * W_metric_u.shape[0])
+                    top_q_indices = torch.topk(W_metric_u.flatten(), top_q, largest=True)[1]
+                    unique_q = torch.unique(top_q_indices)
+                    
+                    # Set difference: top_d - (top_d ∩ top_q)
+                    # Prune danger neurons that are NOT in utility
+                    mask = ~torch.isin(unique_d, unique_q)
+                    filtered_indices = unique_d[mask]
+                    
+                    # Create pruning mask
+                    weight_dim = subset[name].weight.data.shape[1]
+                    filtered_indices_rows = filtered_indices // weight_dim
+                    filtered_indices_cols = filtered_indices % weight_dim
+                    
+                    W_mask_stage1 = torch.zeros_like(subset[name].weight.data) == 1
+                    W_mask_stage1[filtered_indices_rows, filtered_indices_cols] = True
+                    
+                    # Apply Stage 1 pruning
+                    subset[name].weight.data[W_mask_stage1] = 0
+        
+        print(f"✓ Stage 1 complete: Pruned {d*100:.1f}% danger neurons (excluding {q*100:.1f}% utility)")
+        
+        # Save Stage 1 model
+        if stage1_model_path:
+            print(f"\nSaving Stage 1 model to {stage1_model_path}...")
+            os.makedirs(stage1_model_path, exist_ok=True)
+            model.save_pretrained(stage1_model_path)
+            tokenizer.save_pretrained(stage1_model_path)
+            print(f"✓ Stage 1 model saved")
+        else:
+            raise ValueError("stage1_model_path must be provided")
     
     print()
     

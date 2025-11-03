@@ -452,11 +452,22 @@ def main():
             del vllm_model_stage1
             gc.collect()
             torch.cuda.empty_cache()
+            
+            # Reset vLLM's distributed state to avoid "already initialized" error
+            try:
+                from vllm.model_executor.parallel_utils.parallel_state import destroy_model_parallel
+                destroy_model_parallel()
+            except (ImportError, AttributeError, Exception):
+                pass  # If not available or fails, continue anyway
         
         # Clean up Stage 1 model from memory
         del model_stage1
         gc.collect()
         torch.cuda.empty_cache()
+        
+        # Small delay to ensure cleanup completes
+        import time
+        time.sleep(3)
         
         # Load Stage 2 model for evaluation
         print("\n" + "=" * 80)
@@ -582,6 +593,13 @@ def main():
             del vllm_model_stage2
             gc.collect()
             torch.cuda.empty_cache()
+            
+            # Reset vLLM's distributed state
+            try:
+                from vllm.model_executor.parallel_utils.parallel_state import destroy_model_parallel
+                destroy_model_parallel()
+            except (ImportError, AttributeError, Exception):
+                pass  # If not available or fails, continue anyway
         
         # Update model to Stage 2 model for compatibility
         model = model_stage2
