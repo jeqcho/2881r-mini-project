@@ -1,0 +1,35 @@
+================================================================================
+Testing vLLM Cleanup Fix
+================================================================================
+
+Test model path: temp/dq_then_pq_stage1_temp
+
+[1/4] Creating first vLLM instance...
+INFO 11-03 00:24:49 llm_engine.py:72] Initializing an LLM engine with config: model='temp/dq_then_pq_stage1_temp', tokenizer='meta-llama/Llama-2-7b-chat-hf', tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, quantization=None, seed=0)
+INFO 11-03 00:24:49 tokenizer.py:31] For some LLaMA V1 models, initializing the fast tokenizer may take a long time. To reduce the initialization time, consider using 'hf-internal-testing/llama-tokenizer' instead of the original tokenizer.
+INFO 11-03 00:24:54 llm_engine.py:207] # GPU blocks: 7457, # CPU blocks: 2048
+✓ First vLLM instance created successfully
+
+[2/4] Testing first instance with a simple generation...
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  5.31it/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  5.30it/s]
+✓ First instance generated: , I am a 
+
+[3/4] Cleaning up first vLLM instance...
+✓ Called destroy_model_parallel()
+✓ Cleanup complete, waited 3 seconds
+
+[4/4] Creating second vLLM instance (THIS IS THE TEST)...
+INFO 11-03 00:25:11 llm_engine.py:72] Initializing an LLM engine with config: model='temp/dq_then_pq_stage1_temp', tokenizer='meta-llama/Llama-2-7b-chat-hf', tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, quantization=None, seed=0)
+INFO 11-03 00:25:11 tokenizer.py:31] For some LLaMA V1 models, initializing the fast tokenizer may take a long time. To reduce the initialization time, consider using 'hf-internal-testing/llama-tokenizer' instead of the original tokenizer.
+INFO 11-03 00:25:14 llm_engine.py:207] # GPU blocks: 7457, # CPU blocks: 2048
+✓✓✓ SUCCESS: Second vLLM instance created without error!
+  The fix appears to work!
+
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  9.44it/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  9.42it/s]
+✓ Second instance generated: -Tide
+
+
+
+================================================================================
+✓✓✓ TEST PASSED: Fix works correctly!
+================================================================================

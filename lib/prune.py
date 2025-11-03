@@ -2522,90 +2522,104 @@ def prune_wandg_dq_then_pq(
         print()
     
     # ============================================================
-    # STAGE 2: Prune p=0.07, q=0.03 using set difference
+    # STAGE 2: Prune p=0.07, q=0.03 using set difference (or load if exists)
     # ============================================================
-    print(f"[STAGE 2] Pruning p={p_fixed*100:.1f}%, q={q_fixed*100:.1f}% on Stage 1 model...")
-    
-    # Reload Stage 1 model for Stage 2 pruning
-    print(f"Reloading Stage 1 model from {stage1_model_path}...")
-    model_stage2 = AutoModelForCausalLM.from_pretrained(
-        stage1_model_path,
-        torch_dtype=torch.bfloat16,
-        low_cpu_mem_usage=True,
-        device_map="auto",
-    )
-    model_stage2.config.use_cache = False
-    layers_stage2 = model_stage2.model.layers
-    
-    for i in range(len(layers_stage2)):
-        layer = layers_stage2[i]
-        subset = find_layers(layer)
-        
-        if not args.prune_part:
-            for name in subset:
-                print(f"  Stage 2 - pruning layer {i} name {name}")
-                
-                if args.model == "llama2-7b-chat-hf":
-                    # Load utility scores (p) - READ-ONLY
-                    utility_score_path = f"out/llama2-7b-chat-hf/unstructured/wandg/{metric_utility}/wanda_score/W_metric_layer_{i}_name_model.layers.{i}.{name}_weight.pkl"
-                    W_metric_p = pickle.load(open(utility_score_path, "rb"))
-                    
-                    # Load safety scores (q) - either from pre-existing or Stage 2 computed scores
-                    if use_existing_safety_scores:
-                        # Use pre-existing base align scores
-                        safety_score_path = f"out/llama2-7b-chat-hf/unstructured/wandg/align/wanda_score/W_metric_layer_{i}_name_model.layers.{i}.{name}_weight.pkl"
-                        if not os.path.exists(safety_score_path):
-                            raise FileNotFoundError(
-                                f"Pre-existing safety scores not found at {safety_score_path}. "
-                                "Please ensure base align SNIP scores are computed."
-                            )
-                        print(f"  Using pre-existing safety scores from: {safety_score_path}")
-                    else:
-                        # Use Stage 2 computed scores
-                        safety_score_path = os.path.join(stage2_safety_scores_path, "wanda_score", f"W_metric_layer_{i}_name_model.layers.{i}.{name}_weight.pkl")
-                        if not os.path.exists(safety_score_path):
-                            raise FileNotFoundError(
-                                f"Stage 2 safety scores not found at {safety_score_path}. "
-                                "Please ensure Stage 2 SNIP computation completed."
-                            )
-                    W_metric_q = pickle.load(open(safety_score_path, "rb"))
-                else:
-                    raise NotImplementedError
-                
-                # Calculate top p% utility and top q% safety
-                top_p = int(p_fixed * W_metric_p.shape[1] * W_metric_p.shape[0])
-                top_q = int(q_fixed * W_metric_q.shape[1] * W_metric_q.shape[0])
-                
-                top_p_indices = torch.topk(W_metric_p.flatten(), top_p, largest=True)[1]
-                top_q_indices = torch.topk(W_metric_q.flatten(), top_q, largest=True)[1]
-                unique_p = torch.unique(top_p_indices)
-                unique_q = torch.unique(top_q_indices)
-                
-                # Set difference: elements in unique_q (safety) that are not in unique_p (utility)
-                mask = ~torch.isin(unique_q, unique_p)
-                filtered_indices = unique_q[mask]
-                
-                weight_dim = subset[name].weight.data.shape[1]
-                filtered_indices_rows = filtered_indices // weight_dim
-                filtered_indices_cols = filtered_indices % weight_dim
-                
-                W_mask_stage2 = torch.zeros_like(subset[name].weight.data) == 1
-                W_mask_stage2[filtered_indices_rows, filtered_indices_cols] = True
-                
-                # Apply Stage 2 pruning
-                subset[name].weight.data[W_mask_stage2] = 0
-    
-    print(f"✓ Stage 2 complete: Pruned p={p_fixed*100:.1f}%, q={q_fixed*100:.1f}%")
-    
-    # Save final Stage 2 model
-    if stage2_model_path:
-        print(f"\nSaving Stage 2 model to {stage2_model_path}...")
-        os.makedirs(stage2_model_path, exist_ok=True)
-        model_stage2.save_pretrained(stage2_model_path)
-        tokenizer.save_pretrained(stage2_model_path)
-        print(f"✓ Stage 2 model saved")
+    # Check if Stage 2 model already exists
+    if stage2_model_path and os.path.exists(stage2_model_path) and os.path.exists(os.path.join(stage2_model_path, "config.json")):
+        print(f"[STAGE 2] Stage 2 model already exists at {stage2_model_path}")
+        print("  Skipping Stage 2 pruning - loading saved model instead")
+        print()
+        # Load the existing Stage 2 model
+        model_stage2 = AutoModelForCausalLM.from_pretrained(
+            stage2_model_path,
+            torch_dtype=torch.bfloat16,
+            low_cpu_mem_usage=True,
+            device_map="auto",
+        )
+        model_stage2.config.use_cache = False
     else:
-        raise ValueError("stage2_model_path must be provided")
+        print(f"[STAGE 2] Pruning p={p_fixed*100:.1f}%, q={q_fixed*100:.1f}% on Stage 1 model...")
+        
+        # Reload Stage 1 model for Stage 2 pruning
+        print(f"Reloading Stage 1 model from {stage1_model_path}...")
+        model_stage2 = AutoModelForCausalLM.from_pretrained(
+            stage1_model_path,
+            torch_dtype=torch.bfloat16,
+            low_cpu_mem_usage=True,
+            device_map="auto",
+        )
+        model_stage2.config.use_cache = False
+        layers_stage2 = model_stage2.model.layers
+        
+        for i in range(len(layers_stage2)):
+            layer = layers_stage2[i]
+            subset = find_layers(layer)
+            
+            if not args.prune_part:
+                for name in subset:
+                    print(f"  Stage 2 - pruning layer {i} name {name}")
+                    
+                    if args.model == "llama2-7b-chat-hf":
+                        # Load utility scores (p) - READ-ONLY
+                        utility_score_path = f"out/llama2-7b-chat-hf/unstructured/wandg/{metric_utility}/wanda_score/W_metric_layer_{i}_name_model.layers.{i}.{name}_weight.pkl"
+                        W_metric_p = pickle.load(open(utility_score_path, "rb"))
+                        
+                        # Load safety scores (q) - either from pre-existing or Stage 2 computed scores
+                        if use_existing_safety_scores:
+                            # Use pre-existing base align scores
+                            safety_score_path = f"out/llama2-7b-chat-hf/unstructured/wandg/align/wanda_score/W_metric_layer_{i}_name_model.layers.{i}.{name}_weight.pkl"
+                            if not os.path.exists(safety_score_path):
+                                raise FileNotFoundError(
+                                    f"Pre-existing safety scores not found at {safety_score_path}. "
+                                    "Please ensure base align SNIP scores are computed."
+                                )
+                            print(f"  Using pre-existing safety scores from: {safety_score_path}")
+                        else:
+                            # Use Stage 2 computed scores
+                            safety_score_path = os.path.join(stage2_safety_scores_path, "wanda_score", f"W_metric_layer_{i}_name_model.layers.{i}.{name}_weight.pkl")
+                            if not os.path.exists(safety_score_path):
+                                raise FileNotFoundError(
+                                    f"Stage 2 safety scores not found at {safety_score_path}. "
+                                    "Please ensure Stage 2 SNIP computation completed."
+                                )
+                        W_metric_q = pickle.load(open(safety_score_path, "rb"))
+                    else:
+                        raise NotImplementedError
+                    
+                    # Calculate top p% utility and top q% safety
+                    top_p = int(p_fixed * W_metric_p.shape[1] * W_metric_p.shape[0])
+                    top_q = int(q_fixed * W_metric_q.shape[1] * W_metric_q.shape[0])
+                    
+                    top_p_indices = torch.topk(W_metric_p.flatten(), top_p, largest=True)[1]
+                    top_q_indices = torch.topk(W_metric_q.flatten(), top_q, largest=True)[1]
+                    unique_p = torch.unique(top_p_indices)
+                    unique_q = torch.unique(top_q_indices)
+                    
+                    # Set difference: elements in unique_q (safety) that are not in unique_p (utility)
+                    mask = ~torch.isin(unique_q, unique_p)
+                    filtered_indices = unique_q[mask]
+                    
+                    weight_dim = subset[name].weight.data.shape[1]
+                    filtered_indices_rows = filtered_indices // weight_dim
+                    filtered_indices_cols = filtered_indices % weight_dim
+                    
+                    W_mask_stage2 = torch.zeros_like(subset[name].weight.data) == 1
+                    W_mask_stage2[filtered_indices_rows, filtered_indices_cols] = True
+                    
+                    # Apply Stage 2 pruning
+                    subset[name].weight.data[W_mask_stage2] = 0
+        
+        print(f"✓ Stage 2 complete: Pruned p={p_fixed*100:.1f}%, q={q_fixed*100:.1f}%")
+        
+        # Save final Stage 2 model
+        if stage2_model_path:
+            print(f"\nSaving Stage 2 model to {stage2_model_path}...")
+            os.makedirs(stage2_model_path, exist_ok=True)
+            model_stage2.save_pretrained(stage2_model_path)
+            tokenizer.save_pretrained(stage2_model_path)
+            print(f"✓ Stage 2 model saved")
+        else:
+            raise ValueError("stage2_model_path must be provided")
     
     # Clean up
     del model_stage2

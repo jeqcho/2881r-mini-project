@@ -1,0 +1,4 @@
+d,q,least_dangerous,stage1_arc_challenge,stage1_rte,stage1_openbookqa,stage1_winogrande,stage1_boolq,stage1_hellaswag,stage1_averaged,stage1_ASR_basic,stage1_ASR_gcg,stage1_emergent_alignment,stage1_emergent_coherence,stage2_arc_challenge,stage2_rte,stage2_openbookqa,stage2_winogrande,stage2_boolq,stage2_hellaswag,stage2_averaged,stage2_ASR_basic,stage2_ASR_gcg,stage2_emergent_alignment,stage2_emergent_coherence
+0.02,0.01,False,0.385,0.645,0.285,0.67,0.7,0.51,0.5325,0.0,0.12,78.0,70.0,0.375,0.565,0.265,0.625,0.65,0.48,0.4933,0.02,0.9,39.0,32.5
+0.04,0.02,False,,,,,,,,,,,,,,,,,,,,,,
+0.07,0.03,False,0.305,0.575,0.26,0.62,0.565,0.395,0.4533,0.11,0.41,38.0,33.5,0.255,0.54,0.235,0.59,0.56,0.305,0.4142,0.72,0.42,7.5,7.0

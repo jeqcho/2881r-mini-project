@@ -385,56 +385,27 @@ def main():
             )
             
             # ASR evaluations for Stage 1
-            for include_inst in [True, False]:
-                suffix = "inst_" if include_inst else "no_inst_"
-                # ASR_basic
-                score_basic = eval_attack(
-                    vllm_model_stage1, tokenizer, num_sampled=1,
-                    add_sys_prompt=True, do_sample=False,
-                    save_attack_res=args.save_attack_res,
-                    include_inst=include_inst,
-                    filename=os.path.join(args.save, f"stage1_{suffix}basic.jsonl") if args.save_attack_res else "",
-                )
-                with open(log_filepath, "a") as f:
-                    print(f"stage1\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage1:.6f}\t{stage_prefix}{suffix}ASR_basic\t{score_basic:.4f}", file=f, flush=True)
-                
-                # ASR_basic_no_sys
-                score_basic_nosys = eval_attack(
-                    vllm_model_stage1, tokenizer, num_sampled=1,
-                    add_sys_prompt=False, do_sample=False,
-                    save_attack_res=args.save_attack_res,
-                    include_inst=include_inst,
-                    filename=os.path.join(args.save, f"stage1_{suffix}basic_no_sys.jsonl") if args.save_attack_res else "",
-                )
-                with open(log_filepath, "a") as f:
-                    print(f"stage1\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage1:.6f}\t{stage_prefix}{suffix}ASR_basic_nosys\t{score_basic_nosys:.4f}", file=f, flush=True)
-                
-                # ASR_multiple_nosys
-                if args.model == "llama2-7b-chat-hf" or "llama2-13b-chat-hf":
-                    score_multiple = eval_attack(
-                        vllm_model_stage1, tokenizer, num_sampled=5,
-                        add_sys_prompt=False, do_sample=True,
-                        save_attack_res=args.save_attack_res,
-                        include_inst=include_inst,
-                        filename=os.path.join(args.save, f"stage1_{suffix}multiple_no_sys.jsonl") if args.save_attack_res else "",
-                    )
-                    with open(log_filepath, "a") as f:
-                        print(f"stage1\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage1:.6f}\t{stage_prefix}{suffix}ASR_multiple_nosys\t{score_multiple:.4f}", file=f, flush=True)
+            # ASR_basic (with system prompt and inst)
+            score_basic = eval_attack(
+                vllm_model_stage1, tokenizer, num_sampled=1,
+                add_sys_prompt=True, do_sample=False,
+                save_attack_res=args.save_attack_res,
+                include_inst=True,
+                filename=os.path.join(args.save, "stage1_basic.jsonl") if args.save_attack_res else "",
+            )
+            with open(log_filepath, "a") as f:
+                print(f"stage1\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage1:.6f}\t{stage_prefix}ASR_basic\t{score_basic:.4f}", file=f, flush=True)
             
-            # ASR_gcg
+            # ASR_gcg (only suffix 2)
             result_gcg = eval_attack(
                 vllm_model_stage1, tokenizer, num_sampled=1,
                 add_sys_prompt=False, gcg=True, do_sample=False,
                 save_attack_res=args.save_attack_res,
                 include_inst=True,
+                gcg_suffix_id=2,  # Only use suffix 2
                 filename=os.path.join(args.save, "stage1_gcg.jsonl") if args.save_attack_res else "",
             )
-            if isinstance(result_gcg, tuple):
-                score_gcg, best_suffix_idx = result_gcg
-                with open(log_filepath, "a") as f:
-                    print(f"stage1\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage1:.6f}\t{stage_prefix}best_gcg_suffix\t{best_suffix_idx}", file=f, flush=True)
-            else:
-                score_gcg = result_gcg
+            score_gcg, _ = result_gcg  # Always returns tuple (score, suffix_id)
             with open(log_filepath, "a") as f:
                 print(f"stage1\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage1:.6f}\t{stage_prefix}ASR_gcg\t{score_gcg:.4f}", file=f, flush=True)
             
@@ -526,56 +497,27 @@ def main():
             )
             
             # ASR evaluations for Stage 2
-            for include_inst in [True, False]:
-                suffix = "inst_" if include_inst else "no_inst_"
-                # ASR_basic
-                score_basic = eval_attack(
-                    vllm_model_stage2, tokenizer, num_sampled=1,
-                    add_sys_prompt=True, do_sample=False,
-                    save_attack_res=args.save_attack_res,
-                    include_inst=include_inst,
-                    filename=os.path.join(args.save, f"stage2_{suffix}basic.jsonl") if args.save_attack_res else "",
-                )
-                with open(log_filepath, "a") as f:
-                    print(f"stage2\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage2:.6f}\t{stage_prefix}{suffix}ASR_basic\t{score_basic:.4f}", file=f, flush=True)
-                
-                # ASR_basic_no_sys
-                score_basic_nosys = eval_attack(
-                    vllm_model_stage2, tokenizer, num_sampled=1,
-                    add_sys_prompt=False, do_sample=False,
-                    save_attack_res=args.save_attack_res,
-                    include_inst=include_inst,
-                    filename=os.path.join(args.save, f"stage2_{suffix}basic_no_sys.jsonl") if args.save_attack_res else "",
-                )
-                with open(log_filepath, "a") as f:
-                    print(f"stage2\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage2:.6f}\t{stage_prefix}{suffix}ASR_basic_nosys\t{score_basic_nosys:.4f}", file=f, flush=True)
-                
-                # ASR_multiple_nosys
-                if args.model == "llama2-7b-chat-hf" or "llama2-13b-chat-hf":
-                    score_multiple = eval_attack(
-                        vllm_model_stage2, tokenizer, num_sampled=5,
-                        add_sys_prompt=False, do_sample=True,
-                        save_attack_res=args.save_attack_res,
-                        include_inst=include_inst,
-                        filename=os.path.join(args.save, f"stage2_{suffix}multiple_no_sys.jsonl") if args.save_attack_res else "",
-                    )
-                    with open(log_filepath, "a") as f:
-                        print(f"stage2\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage2:.6f}\t{stage_prefix}{suffix}ASR_multiple_nosys\t{score_multiple:.4f}", file=f, flush=True)
+            # ASR_basic (with system prompt and inst)
+            score_basic = eval_attack(
+                vllm_model_stage2, tokenizer, num_sampled=1,
+                add_sys_prompt=True, do_sample=False,
+                save_attack_res=args.save_attack_res,
+                include_inst=True,
+                filename=os.path.join(args.save, "stage2_basic.jsonl") if args.save_attack_res else "",
+            )
+            with open(log_filepath, "a") as f:
+                print(f"stage2\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage2:.6f}\t{stage_prefix}ASR_basic\t{score_basic:.4f}", file=f, flush=True)
             
-            # ASR_gcg
+            # ASR_gcg (only suffix 2)
             result_gcg = eval_attack(
                 vllm_model_stage2, tokenizer, num_sampled=1,
                 add_sys_prompt=False, gcg=True, do_sample=False,
                 save_attack_res=args.save_attack_res,
                 include_inst=True,
+                gcg_suffix_id=2,  # Only use suffix 2
                 filename=os.path.join(args.save, "stage2_gcg.jsonl") if args.save_attack_res else "",
             )
-            if isinstance(result_gcg, tuple):
-                score_gcg, best_suffix_idx = result_gcg
-                with open(log_filepath, "a") as f:
-                    print(f"stage2\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage2:.6f}\t{stage_prefix}best_gcg_suffix\t{best_suffix_idx}", file=f, flush=True)
-            else:
-                score_gcg = result_gcg
+            score_gcg, _ = result_gcg  # Always returns tuple (score, suffix_id)
             with open(log_filepath, "a") as f:
                 print(f"stage2\t{args.d}\t{args.q}\t0.07\t0.03\t{sparsity_stage2:.6f}\t{stage_prefix}ASR_gcg\t{score_gcg:.4f}", file=f, flush=True)
             

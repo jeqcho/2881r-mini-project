@@ -4,7 +4,7 @@ accelerate 0.24.1
 # of gpus:  1
 Disentangle: True
 loading llm model llama2-7b-chat-hf
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:25<00:25, 25.83s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:34<00:00, 15.86s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:34<00:00, 17.36s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [01:07<01:07, 67.47s/it]Loading checkpoint shards: 100%|██████████| 2/2 [01:32<00:00, 42.45s/it]Loading checkpoint shards: 100%|██████████| 2/2 [01:32<00:00, 46.20s/it]
 use device  cuda:0
 ================================================================================
 DQ then P007Q003 Two-Stage Pruning
@@ -26,163 +26,27 @@ Storage paths:
 
 prune every linear layer
 
-[STAGE 1] Pruning d=7.0% danger neurons NOT in q=3.0% utility...
-  Stage 1 - pruning layer 0 name self_attn.q_proj
-  Stage 1 - pruning layer 0 name self_attn.k_proj
-  Stage 1 - pruning layer 0 name self_attn.v_proj
-  Stage 1 - pruning layer 0 name self_attn.o_proj
-  Stage 1 - pruning layer 0 name mlp.gate_proj
-  Stage 1 - pruning layer 0 name mlp.up_proj
-  Stage 1 - pruning layer 0 name mlp.down_proj
-  Stage 1 - pruning layer 1 name self_attn.q_proj
-  Stage 1 - pruning layer 1 name self_attn.k_proj
-  Stage 1 - pruning layer 1 name self_attn.v_proj
-  Stage 1 - pruning layer 1 name self_attn.o_proj
-  Stage 1 - pruning layer 1 name mlp.gate_proj
-  Stage 1 - pruning layer 1 name mlp.up_proj
-  Stage 1 - pruning layer 1 name mlp.down_proj
-  Stage 1 - pruning layer 2 name self_attn.q_proj
-  Stage 1 - pruning layer 2 name self_attn.k_proj
-  Stage 1 - pruning layer 2 name self_attn.v_proj
-  Stage 1 - pruning layer 2 name self_attn.o_proj
-  Stage 1 - pruning layer 2 name mlp.gate_proj
-  Stage 1 - pruning layer 2 name mlp.up_proj
-  Stage 1 - pruning layer 2 name mlp.down_proj
-  Stage 1 - pruning layer 3 name self_attn.q_proj
-  Stage 1 - pruning layer 3 name self_attn.k_proj
-  Stage 1 - pruning layer 3 name self_attn.v_proj
-  Stage 1 - pruning layer 3 name self_attn.o_proj
-  Stage 1 - pruning layer 3 name mlp.gate_proj
-  Stage 1 - pruning layer 3 name mlp.up_proj
-  Stage 1 - pruning layer 3 name mlp.down_proj
-  Stage 1 - pruning layer 4 name self_attn.q_proj
-  Stage 1 - pruning layer 4 name self_attn.k_proj
-  Stage 1 - pruning layer 4 name self_attn.v_proj
-  Stage 1 - pruning layer 4 name self_attn.o_proj
-  Stage 1 - pruning layer 4 name mlp.gate_proj
-  Stage 1 - pruning layer 4 name mlp.up_proj
-  Stage 1 - pruning layer 4 name mlp.down_proj
-  Stage 1 - pruning layer 5 name self_attn.q_proj
-  Stage 1 - pruning layer 5 name self_attn.k_proj
-  Stage 1 - pruning layer 5 name self_attn.v_proj
-  Stage 1 - pruning layer 5 name self_attn.o_proj
-  Stage 1 - pruning layer 5 name mlp.gate_proj
-  Stage 1 - pruning layer 5 name mlp.up_proj
-  Stage 1 - pruning layer 5 name mlp.down_proj
-  Stage 1 - pruning layer 6 name self_attn.q_proj
-  Stage 1 - pruning layer 6 name self_attn.k_proj
-  Stage 1 - pruning layer 6 name self_attn.v_proj
-  Stage 1 - pruning layer 6 name self_attn.o_proj
-  Stage 1 - pruning layer 6 name mlp.gate_proj
-  Stage 1 - pruning layer 6 name mlp.up_proj
-  Stage 1 - pruning layer 6 name mlp.down_proj
-  Stage 1 - pruning layer 7 name self_attn.q_proj
-  Stage 1 - pruning layer 7 name self_attn.k_proj
-  Stage 1 - pruning layer 7 name self_attn.v_proj
-  Stage 1 - pruning layer 7 name self_attn.o_proj
-  Stage 1 - pruning layer 7 name mlp.gate_proj
-  Stage 1 - pruning layer 7 name mlp.up_proj
-  Stage 1 - pruning layer 7 name mlp.down_proj
-  Stage 1 - pruning layer 8 name self_attn.q_proj
-  Stage 1 - pruning layer 8 name self_attn.k_proj
-  Stage 1 - pruning layer 8 name self_attn.v_proj
-  Stage 1 - pruning layer 8 name self_attn.o_proj
-  Stage 1 - pruning layer 8 name mlp.gate_proj
-  Stage 1 - pruning layer 8 name mlp.up_proj
-  Stage 1 - pruning layer 8 name mlp.down_proj
-  Stage 1 - pruning layer 9 name self_attn.q_proj
-  Stage 1 - pruning layer 9 name self_attn.k_proj
-  Stage 1 - pruning layer 9 name self_attn.v_proj
-  Stage 1 - pruning layer 9 name self_attn.o_proj
-  Stage 1 - pruning layer 9 name mlp.gate_proj
-  Stage 1 - pruning layer 9 name mlp.up_proj
-  Stage 1 - pruning layer 9 name mlp.down_proj
-  Stage 1 - pruning layer 10 name self_attn.q_proj
-  Stage 1 - pruning layer 10 name self_attn.k_proj
-  Stage 1 - pruning layer 10 name self_attn.v_proj
-  Stage 1 - pruning layer 10 name self_attn.o_proj
-  Stage 1 - pruning layer 10 name mlp.gate_proj
-  Stage 1 - pruning layer 10 name mlp.up_proj
-  Stage 1 - pruning layer 10 name mlp.down_proj
-  Stage 1 - pruning layer 11 name self_attn.q_proj
-  Stage 1 - pruning layer 11 name self_attn.k_proj
-  Stage 1 - pruning layer 11 name self_attn.v_proj
-  Stage 1 - pruning layer 11 name self_attn.o_proj
-  Stage 1 - pruning layer 11 name mlp.gate_proj
-  Stage 1 - pruning layer 11 name mlp.up_proj
-  Stage 1 - pruning layer 11 name mlp.down_proj
-  Stage 1 - pruning layer 12 name self_attn.q_proj
-  Stage 1 - pruning layer 12 name self_attn.k_proj
-  Stage 1 - pruning layer 12 name self_attn.v_proj
-  Stage 1 - pruning layer 12 name self_attn.o_proj
-  Stage 1 - pruning layer 12 name mlp.gate_proj
-  Stage 1 - pruning layer 12 name mlp.up_proj
-  Stage 1 - pruning layer 12 name mlp.down_proj
-  Stage 1 - pruning layer 13 name self_attn.q_proj
-  Stage 1 - pruning layer 13 name self_attn.k_proj
-  Stage 1 - pruning layer 13 name self_attn.v_proj
-  Stage 1 - pruning layer 13 name self_attn.o_proj
-  Stage 1 - pruning layer 13 name mlp.gate_proj
-  Stage 1 - pruning layer 13 name mlp.up_proj
-  Stage 1 - pruning layer 13 name mlp.down_proj
-  Stage 1 - pruning layer 14 name self_attn.q_proj
-  Stage 1 - pruning layer 14 name self_attn.k_proj
-  Stage 1 - pruning layer 14 name self_attn.v_proj
-  Stage 1 - pruning layer 14 name self_attn.o_proj
-  Stage 1 - pruning layer 14 name mlp.gate_proj
-  Stage 1 - pruning layer 14 name mlp.up_proj
-  Stage 1 - pruning layer 14 name mlp.down_proj
-  Stage 1 - pruning layer 15 name self_attn.q_proj
-  Stage 1 - pruning layer 15 name self_attn.k_proj
-  Stage 1 - pruning layer 15 name self_attn.v_proj
-  Stage 1 - pruning layer 15 name self_attn.o_proj
-  Stage 1 - pruning layer 15 name mlp.gate_proj
-  Stage 1 - pruning layer 15 name mlp.up_proj
-  Stage 1 - pruning layer 15 name mlp.down_proj
-  Stage 1 - pruning layer 16 name self_attn.q_proj
-  Stage 1 - pruning layer 16 name self_attn.k_proj
-  Stage 1 - pruning layer 16 name self_attn.v_proj
-  Stage 1 - pruning layer 16 name self_attn.o_proj
-  Stage 1 - pruning layer 16 name mlp.gate_proj
-  Stage 1 - pruning layer 16 name mlp.up_proj
-  Stage 1 - pruning layer 16 name mlp.down_proj
-  Stage 1 - pruning layer 17 name self_attn.q_proj
-  Stage 1 - pruning layer 17 name self_attn.k_proj
-  Stage 1 - pruning layer 17 name self_attn.v_proj
-  Stage 1 - pruning layer 17 name self_attn.o_proj
-  Stage 1 - pruning layer 17 name mlp.gate_proj
-  Stage 1 - pruning layer 17 name mlp.up_proj
-  Stage 1 - pruning layer 17 name mlp.down_proj
-  Stage 1 - pruning layer 18 name self_attn.q_proj
-  Stage 1 - pruning layer 18 name self_attn.k_proj
-  Stage 1 - pruning layer 18 name self_attn.v_proj
-  Stage 1 - pruning layer 18 name self_attn.o_proj
-  Stage 1 - pruning layer 18 name mlp.gate_proj
-  Stage 1 - pruning layer 18 name mlp.up_proj
-  Stage 1 - pruning layer 18 name mlp.down_proj
-  Stage 1 - pruning layer 19 name self_attn.q_proj
-  Stage 1 - pruning layer 19 name self_attn.k_proj
-  Stage 1 - pruning layer 19 name self_attn.v_proj
-  Stage 1 - pruning layer 19 name self_attn.o_proj
-  Stage 1 - pruning layer 19 name mlp.gate_proj
-  Stage 1 - pruning layer 19 name mlp.up_proj
-  Stage 1 - pruning layer 19 name mlp.down_proj
-  Stage 1 - pruning layer 20 name self_attn.q_proj
-  Stage 1 - pruning layer 20 name self_attn.k_proj
-  Stage 1 - pruning layer 20 name self_attn.v_proj
-  Stage 1 - pruning layer 20 name self_attn.o_proj
-  Stage 1 - pruning layer 20 name mlp.gate_proj
-  Stage 1 - pruning layer 20 name mlp.up_proj
-  Stage 1 - pruning layer 20 name mlp.down_proj
-  Stage 1 - pruning layer 21 name self_attn.q_proj
-  Stage 1 - pruning layer 21 name self_attn.k_proj
-  Stage 1 - pruning layer 21 name self_attn.v_proj
-  Stage 1 - pruning layer 21 name self_attn.o_proj
-  Stage 1 - pruning layer 21 name mlp.gate_proj
-  Stage 1 - pruning layer 21 name mlp.up_proj
-  Stage 1 - pruning layer 21 name mlp.down_proj
-  Stage 1 - pruning layer 22 name self_attn.q_proj
-  Stage 1 - pruning layer 22 name self_attn.k_proj
-  Stage 1 - pruning layer 22 name self_attn.v_proj
-  Stage 1 - pruning layer 22 name self_attn.o_proj
-  Stage 1 - pruning layer 22 name mlp.gate_proj
+[STAGE 1] Stage 1 model already exists at out/experiments/dq_then_p007q003/d_7_q_3_least/stage1_model
+  Skipping Stage 1 pruning - will load saved model for Stage 2
+
+
+[STAGE 2] Using PRE-EXISTING safety SNIP scores (skipping computation)
+  Using base align scores from: out/llama2-7b-chat-hf/unstructured/wandg/align/wanda_score/
+
+[STAGE 2] Stage 2 model already exists at out/experiments/dq_then_p007q003/d_7_q_3_least/stage2_model
+  Skipping Stage 2 pruning - loading saved model instead
+
+Traceback (most recent call last):
+  File "/workspace/projects/2881r-mini-project/main.py", line 1005, in <module>
+    main()
+  File "/workspace/projects/2881r-mini-project/main.py", line 308, in main
+    prune_wandg_dq_then_pq(
+  File "/workspace/projects/2881r-mini-project/lib/prune.py", line 2533, in prune_wandg_dq_then_pq
+    model_stage2 = AutoModelForCausalLM.from_pretrained(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/projects/2881r-mini-project/.venv/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 566, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/projects/2881r-mini-project/.venv/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2992, in from_pretrained
+    raise EnvironmentError(
+OSError: Error no file named pytorch_model.bin, tf_model.h5, model.ckpt.index or flax_model.msgpack found in directory out/experiments/dq_then_p007q003/d_7_q_3_least/stage2_model.

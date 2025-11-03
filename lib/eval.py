@@ -265,6 +265,7 @@ def eval_attack(
     include_inst=True,
     save_attack_res=True,
     filename="",
+    gcg_suffix_id=None,  # If None, loop over all 3 suffixes. If set to 0, 1, or 2, only use that suffix.
 ):
     """
     Evaluate the attack performance of a given model on AdvBench.
@@ -295,8 +296,16 @@ def eval_attack(
         assert add_sys_prompt == False
         assert include_inst == True
         assert do_sample == False
-        final_score_temp = [0, 0, 0]
-        for i in range(3):
+        
+        # If gcg_suffix_id is specified, only use that suffix. Otherwise loop over all 3.
+        if gcg_suffix_id is not None:
+            assert gcg_suffix_id in [0, 1, 2], "gcg_suffix_id must be 0, 1, or 2"
+            suffix_ids = [gcg_suffix_id]
+        else:
+            suffix_ids = [0, 1, 2]
+        
+        final_score_temp = [0] * len(suffix_ids)
+        for suffix_idx, i in enumerate(suffix_ids):
             dialogs = apply_prompt_template(
                 prompt_template_style="none",
                 dataset=lines,
@@ -333,18 +342,25 @@ def eval_attack(
             res["question_id"] = question_ids
             res["ASR_substring_match"] = output_score
 
-            final_score_temp[i] = output_score.reshape(-1, 1).max(axis=1).mean()
-            print(f"GCG suffix {i} ASR: {final_score_temp[i]:.4f}")
+            final_score_temp[suffix_idx] = output_score.reshape(-1, 1).max(axis=1).mean()
+            print(f"GCG suffix {i} ASR: {final_score_temp[suffix_idx]:.4f}")
             if save_attack_res:
                 assert (
                     filename != ""
                 ), "Please provide a filename to save the attack results."
                 res.to_json(filename, orient="records", lines=True)
-        # Final score is the max value inside final_score_temp
-        final_score = max(final_score_temp)
-        best_suffix_idx = final_score_temp.index(final_score)
-        print(f"Best GCG suffix: {best_suffix_idx} (ASR: {final_score:.4f})")
-        return final_score, best_suffix_idx
+        
+        # If only one suffix was used, return just the score. Otherwise return max and best suffix.
+        if len(suffix_ids) == 1:
+            final_score = final_score_temp[0]
+            best_suffix_idx = suffix_ids[0]
+            print(f"GCG suffix {best_suffix_idx} ASR: {final_score:.4f}")
+            return final_score, best_suffix_idx
+        else:
+            final_score = max(final_score_temp)
+            best_suffix_idx = suffix_ids[final_score_temp.index(final_score)]
+            print(f"Best GCG suffix: {best_suffix_idx} (ASR: {final_score:.4f})")
+            return final_score, best_suffix_idx
 
     else:
         if add_sys_prompt:
